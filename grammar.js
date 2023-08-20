@@ -15,7 +15,7 @@ module.exports = grammar({
     rules: {
         document: $ => repeat($._block),
 
-        _emptyline: $ => seq(optional($.whitespace), '\n'),
+        _emptyline: $ => seq(optional($._whitespace), '\n'),
 
         _block: $ =>
             choice(
@@ -116,7 +116,7 @@ module.exports = grammar({
                     $.list_item_mark,
                 ),
                 ' ',
-                alias($.line, $.list_item_content),
+                alias($._line, $.list_item_content),
                 /\n/,
             ),
         _unordered_list_mark: _ => /[\*\-]+/,
@@ -187,25 +187,28 @@ module.exports = grammar({
                 '\n',
             ),
 
-        paragraph: $ => seq(repeat1($._inline_element), '\n\n'),
+        paragraph: $ => prec.right(repeat1($._inline_element)),
 
-        line: $ =>
+        _line: $ =>
             prec.right(
-                repeat1(
-                    choice(
-                        $.word,
-                        $.whitespace,
-                        common.punctuation_without($, []),
+                seq(
+                    repeat1(
+                        choice(
+                            $._word,
+                            $._whitespace,
+                            common.punctuation_without($, []),
+                        ),
                     ),
+                    choice(repeat1($._newline), $.eof)
                 ),
             ),
 
-        newline: _ => /\n|\r\n?/,
+        _newline: _ => /\n|\r\n?/,
 
-        word: _ =>
+        _word: _ =>
             new RegExp('[^' + PUNCTUATION_CHARACTERS_REGEX + ' \\t\\n\\r]+'),
 
-        whitespace: _ => /[  \t]+/,
+        _whitespace: _ => /[  \t]+/,
 
         _inline_element: $ =>
             choice(
@@ -221,7 +224,7 @@ module.exports = grammar({
                 $.links,
                 $.xref,
                 $.highlight,
-                $.line
+                $._line
             ),
 
         kbd: $ => seq('kbd:[', optional($.kbd_content), ']'),
