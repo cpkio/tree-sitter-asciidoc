@@ -14,8 +14,10 @@ module.exports = grammar({
 
     rules: {
         document: $ => repeat($._block),
+        _emptyline: $ => seq(/[  \t]*/, '\n'),
         _block: $ =>
             choice(
+                $._emptyline,
                 $.title0,
                 $.title1,
                 $.title2,
@@ -23,6 +25,7 @@ module.exports = grammar({
                 $.title4,
                 $.title5,
                 $.comment,
+                $.attribute,
                 $.paragraph,
                 $.line_breaks,
                 $.page_breaks,
@@ -50,8 +53,8 @@ module.exports = grammar({
                 alias('=', $.title_marker),
                 ' ',
                 alias(/.*\n?/, $.title_content),
-                repeat($.doc_attr),
-                /\n/,
+                // repeat($.doc_attr) -- нет никакой необходимости пришивать
+                // атрибут к заголовку, он может встречаться где угодно
             ),
         // prettier-ignore
         title1: $ => seq(alias('==', $.title_marker), ' ', alias(/.*\n?/, $.title_content)),
@@ -63,79 +66,77 @@ module.exports = grammar({
         title4: $ => seq(alias('=====', $.title_marker), ' ', alias(/.*\n?/, $.title_content)),
         // prettier-ignore
         title5: $ => seq(alias('======', $.title_marker), ' ', alias(/.*\n?/, $.title_content)),
-        _doctype: $ =>
+        // _doctype: $ =>
+        //     seq(
+        //         $.attr_mark,
+        //         alias('doctype', $.attr_name),
+        //         $.attr_mark,
+        //         ' ',
+        //         alias(
+        //             choice('article', 'book', 'manpage', 'inline'),
+        //             $.attr_value,
+        //         ),
+        //         '\n',
+        //     ),
+        // _page_layout: $ =>
+        //     seq(
+        //         $.attr_mark,
+        //         alias('page-layout', $.attr_name),
+        //         $.attr_mark,
+        //         ' ',
+        //         alias(choice('docs', 'landscape', 'portrait'), $.attr_value),
+        //         '\n',
+        //     ),
+        // _text_line: _ => /[.\'\.]+/,
+        // _doc_description: $ =>
+        //     seq(
+        //         $.attr_mark,
+        //         alias('description', $.attr_name),
+        //         $.attr_mark,
+        //         alias(/.+/, $.attr_value),
+        //         '\n',
+        //     ),
+        // _url_repo: $ =>
+        //     seq(
+        //         $.attr_mark,
+        //         alias('url-repo', $.attr_name),
+        //         $.attr_mark,
+        //         ' ',
+        //         $.autolinks,
+        //         '\n',
+        //     ),
+        // _link_with_underscores: $ =>
+        //     seq(
+        //         $.attr_mark,
+        //         alias('link-with-underscores', $.attr_name),
+        //         $.attr_mark,
+        //         $.autolinks,
+        //         '\n',
+        //     ),
+        // _hide_uri_scheme: $ =>
+        //     seq(
+        //         $.attr_mark,
+        //         alias('hide-uri-scheme', $.attr_name),
+        //         $.attr_mark,
+        //         '\n',
+        //     ),
+        // _sectanchors: $ =>
+        //     seq(
+        //         $.attr_mark,
+        //         alias('sectanchors', $.attr_name),
+        //         $.attr_mark,
+        //         '\n',
+        //     ),
+        attribute: $ =>
             seq(
                 $.attr_mark,
-                alias('doctype', $.attr_name),
+                $.attr_name,
                 $.attr_mark,
                 ' ',
-                alias(
-                    choice('article', 'book', 'manpage', 'inline'),
-                    $.attr_value,
-                ),
-                '\n',
-            ),
-        _page_layout: $ =>
-            seq(
-                $.attr_mark,
-                alias('page-layout', $.attr_name),
-                $.attr_mark,
-                ' ',
-                alias(choice('docs', 'landscape', 'portrait'), $.attr_value),
-                '\n',
-            ),
-        _text_line: _ => /[.\'\.]+/,
-        _doc_description: $ =>
-            seq(
-                $.attr_mark,
-                alias('description', $.attr_name),
-                $.attr_mark,
-                alias(/.+/, $.attr_value),
-                '\n',
-            ),
-        _url_repo: $ =>
-            seq(
-                $.attr_mark,
-                alias('url-repo', $.attr_name),
-                $.attr_mark,
-                ' ',
-                $.autolinks,
-                '\n',
-            ),
-        _link_with_underscores: $ =>
-            seq(
-                $.attr_mark,
-                alias('link-with-underscores', $.attr_name),
-                $.attr_mark,
-                $.autolinks,
-                '\n',
-            ),
-        _hide_uri_scheme: $ =>
-            seq(
-                $.attr_mark,
-                alias('hide-uri-scheme', $.attr_name),
-                $.attr_mark,
-                '\n',
-            ),
-        _sectanchors: $ =>
-            seq(
-                $.attr_mark,
-                alias('sectanchors', $.attr_name),
-                $.attr_mark,
-                '\n',
-            ),
-        doc_attr: $ =>
-            choice(
-                $._doctype,
-                $._url_repo,
-                $._hide_uri_scheme,
-                $._sectanchors,
-                $._doc_description,
-                $._link_with_underscores,
-                $._page_layout,
+                $.attr_value
             ),
         attr_mark: _ => ':',
-        attr_name: _ => choice(/[\w\-]+/),
+        attr_name: _ => choice(/!?[\w\-_]+!?/),
         attr_value: _ => /.+/,
         // Admonitions
         _admonitions: $ =>
