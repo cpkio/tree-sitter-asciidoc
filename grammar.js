@@ -14,7 +14,9 @@ module.exports = grammar({
 
     rules: {
         document: $ => repeat($._block),
-        _emptyline: $ => seq(/[  \t]*/, '\n'),
+
+        _emptyline: $ => seq(optional($.whitespace), '\n'),
+
         _block: $ =>
             choice(
                 $._emptyline,
@@ -31,6 +33,7 @@ module.exports = grammar({
                 $.page_breaks,
                 $._titled_block,
             ),
+
         _titled_block: $ =>
             seq(
                 seq(
@@ -47,6 +50,7 @@ module.exports = grammar({
                     ),
                 ),
             ),
+
         block_title: _ => seq('.', /.+\n?/),
         title0: $ =>
             seq(
@@ -64,6 +68,7 @@ module.exports = grammar({
         title4: $ => seq(alias('=====', $.title_marker), ' ', alias(/.*\n?/, $.title_content)),
         // prettier-ignore
         title5: $ => seq(alias('======', $.title_marker), ' ', alias(/.*\n?/, $.title_content)),
+
         attribute: $ =>
             seq(
                 $.attr_mark,
@@ -75,6 +80,7 @@ module.exports = grammar({
         attr_mark: _ => ':',
         attr_name: _ => choice(/!?[\w\-_]+/, /[\w\-_]+!?/ ),
         attr_value: _ => /.+/,
+
         // Admonitions
         _admonitions: $ =>
             choice($.note, $.tip, $.important, $.caution, $.warning),
@@ -96,6 +102,7 @@ module.exports = grammar({
         _warning: _$ => seq('WARNING: ', /.+\n?/),
         _warning_block: _$ =>
             seq('[WARNING]\n', '----\n', repeat(/.+\n/), '----\n'),
+
         // list
         list: $ => seq(repeat1($.list_item), '\n'),
         list_item: $ =>
@@ -115,6 +122,7 @@ module.exports = grammar({
         _unordered_list_mark: _ => /[\*\-]+/,
         _ordered_list_mark: _ => choice(/\.+/, /0?\d+\./, /[\w\P{M}]\./),
         _checklist_mark: _ => /\* \[[\* x]\]/,
+
         code: $ =>
             seq(
                 /\[,\s?/,
@@ -126,9 +134,13 @@ module.exports = grammar({
             ),
         code_language: _ => /\w+/,
         code_content: _ => repeat1(/.+\n/),
+
         comment: _$ => seq('// ', /.*\n?/),
+
         line_breaks: _ => seq(/[\-\*]{3}\n\n/),
+
         page_breaks: _ => seq('<<<\n\n'),
+
         image: $ =>
             seq(
                 'image::',
@@ -137,11 +149,13 @@ module.exports = grammar({
                 field('title', $.audio_title),
                 ']\n',
             ),
+
         table: $ =>
             seq($.table_start, optional($.table_content), $.table_end, '\n'),
         table_start: _ => '|===\n',
         table_content: _ => repeat1(/.+\n?/),
         table_end: _ => '|===\n',
+
         description_list: $ => seq(repeat1($.description_list_item), '\n'),
         description_list_item: $ =>
             seq(
@@ -150,6 +164,7 @@ module.exports = grammar({
                 alias(/.+/, $.list_item_content),
                 '\n',
             ),
+
         audio: $ =>
             seq(
                 'audio::',
@@ -161,6 +176,7 @@ module.exports = grammar({
             ),
         audio_url: _ => /[\w.]+/,
         audio_title: _ => /[\w.]+/,
+
         video: $ =>
             seq(
                 'video::',
@@ -170,7 +186,9 @@ module.exports = grammar({
                 ']',
                 '\n',
             ),
+
         paragraph: $ => seq(repeat1($._inline_element), '\n\n'),
+
         line: $ =>
             prec.right(
                 repeat1(
@@ -183,9 +201,12 @@ module.exports = grammar({
             ),
 
         newline: _ => /\n|\r\n?/,
+
         word: _ =>
             new RegExp('[^' + PUNCTUATION_CHARACTERS_REGEX + ' \\t\\n\\r]+'),
+
         whitespace: _ => /[  \t]+/,
+
         _inline_element: $ =>
             choice(
                 $.emphasis,
@@ -202,14 +223,19 @@ module.exports = grammar({
                 $.highlight,
                 $.line
             ),
+
         kbd: $ => seq('kbd:[', optional($.kbd_content), ']'),
         kbd_content: _ => /\w+(\+\w+)?/,
+
         footnote: $ => seq('footnote:[', optional($.footnote_content), ']'),
         footnote_content: _ => /[\w._]+/,
+
         links: $ => choice($.url_macro, $.link_macro, $.mailto),
         autolinks: $ => alias(/\w+:\/\/[^\[\n]+/, $.url),
+
         url_macro: $ =>
             seq($.autolinks, '[', alias(/[^\]]+/, $.url_title), ']'),
+
         link_macro: $ =>
             seq(
                 'link:',
@@ -218,6 +244,7 @@ module.exports = grammar({
                 alias(/[^\]]+/, $.url_title),
                 ']',
             ),
+
         mailto: $ =>
             seq(
                 'mailto:',
@@ -226,7 +253,9 @@ module.exports = grammar({
                 optional(/[^\]]+/),
                 ']',
             ),
+
         xref: $ => choice($._inline_xref, $._xref),
+
         _inline_xref: $ =>
             seq(
                 '<<',
@@ -243,16 +272,19 @@ module.exports = grammar({
                 ']',
             ),
         xref_url: _ => /\w+/,
+
         emphasis: _$ => /_.+_/,
         strong: _$ => /\*.+\*/,
         monospace: _$ => /`.+`/,
         highlight: _ => /#.+#/,
         superscript: _$ => /\^.+\^/,
         subscript: _$ => /~.+~/,
+
         passthrough: $ => choice($._passthrough_plus, $._passthrough_cmd),
         _passthrough_plus: $ => seq('+++', $.passthrough_content, '+++'),
         _passthrough_cmd: $ => seq('pass:[', $.passthrough_content, ']'),
         passthrough_content: _ => /\w+/,
+
         replacement: _ =>
             choice(
                 '{blank}',

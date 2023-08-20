@@ -1,0 +1,19 @@
+================
+head with attributes
+================
+
+= title0
+:myattribute: my custom attribute
+
+---
+
+(document
+  (title0
+    (title_marker)
+    (title_content))
+  (attribute
+    (attr_mark)
+    (attr_name)
+    (attr_mark)
+    (attr_value))
+)
