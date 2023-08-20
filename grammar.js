@@ -29,6 +29,7 @@ module.exports = grammar({
                 $.comment,
                 $.attribute,
                 $.paragraph,
+                $.include_directive,
                 $.line_breaks,
                 $.page_breaks,
                 $._titled_block,
@@ -42,10 +43,10 @@ module.exports = grammar({
                         $._admonitions,
                         $.list,
                         $.image,
-                        $.code,
+                        // $.code,
                         $.audio,
                         $.video,
-                        $.description_list,
+                        // $.description_list,
                         $.table,
                     ),
                 ),
@@ -123,17 +124,17 @@ module.exports = grammar({
         _ordered_list_mark: _ => choice(/\.+/, /0?\d+\./, /[\w\P{M}]\./),
         _checklist_mark: _ => /\* \[[\* x]\]/,
 
-        code: $ =>
-            seq(
-                /\[,\s?/,
-                field('language', $.code_language),
-                ']\n',
-                '----\n',
-                field('content', optional($.code_content)),
-                '----\n',
-            ),
-        code_language: _ => /\w+/,
-        code_content: _ => repeat1(/.+\n/),
+        // code: $ =>
+        //     seq(
+        //         /\[,\s?/,
+        //         field('language', $.code_language),
+        //         ']\n',
+        //         '----\n',
+        //         field('content', optional($.code_content)),
+        //         '----\n',
+        //     ),
+        // code_language: _ => /\w+/,
+        // code_content: _ => repeat1(/.+\n/),
 
         comment: _$ => seq('// ', /.*\n?/),
 
@@ -156,14 +157,14 @@ module.exports = grammar({
         table_content: _ => repeat1(/.+\n?/),
         table_end: _ => '|===\n',
 
-        description_list: $ => seq(repeat1($.description_list_item), '\n'),
-        description_list_item: $ =>
-            seq(
-                alias(/\w+/, $.list_item_name),
-                ':: ',
-                alias(/.+/, $.list_item_content),
-                '\n',
-            ),
+        // description_list: $ => seq(repeat1($.description_list_item), '\n'),
+        // description_list_item: $ =>
+        //     seq(
+        //         alias(/\w+/, $.list_item_name),
+        //         ':: ',
+        //         alias(/.+/, $.list_item_content),
+        //         '\n',
+        //     ),
 
         audio: $ =>
             seq(
@@ -320,6 +321,34 @@ module.exports = grammar({
                 '{two-semicolons}',
                 '{cpp}',
                 '{pp}',
+            ),
+
+        include_directive: $ =>
+            seq(
+                'include::',
+                $._antora_resource,
+                $._include_params,
+                choice('\n', $.eof)
+            ),
+
+        _include_params: $ =>
+            seq('[',
+                repeat(seq($.include_param, ',')),
+                optional($.include_param),
+                ']'
+            ),
+
+        include_param: $ => /[^\],]+/,
+
+        _antora_resource: $ =>
+            seq(
+                optional(
+                    alias(token(seq(/[\w\d\.]+/, '@')), $.antora_resource_version),
+                ),
+                alias(token(seq(/\w+/, ':')), $.antora_resource_component),
+                alias(token(seq(/\w+/, ':')), $.antora_resource_module),
+                alias(token(seq(choice('page', 'image', 'partial', 'example', 'attachment'), '$')), $.antora_resource_family),
+                alias(token(seq(/\w+/, '.', /\w+/)), $.antora_resource_file)
             ),
     },
 })

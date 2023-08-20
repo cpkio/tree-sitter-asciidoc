@@ -1,4 +1,4 @@
-(code
-  (code_language) @injection.language
-  (code_content) @injection.content
-)
+; (code
+;   (code_language) @injection.language
+;   (code_content) @injection.content
+; )

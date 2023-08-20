@@ -13,12 +13,13 @@
   (table_end)
   (attr_mark)
   (attr_name)
-]@punctuation.special
+] @punctuation.special
 
 (comment) @comment
 ; (code) @document.code
 
 (note) @text.note
+
 [
   (tip)
   (important)
@@ -31,16 +32,17 @@
   (audio_url)
   (xref_url)
 ] @text.uri
+
 (emphasis) @text.emphasis
 (strong) @text.strong
 (footnote) @text.footnote
 (highlight) @text.warning
 (line_breaks) @punctuation.special
 (page_breaks) @punctuation.special
-(code_language) @parameter
+; (code_language) @parameter
 
 [
-  (code)
+  ; (code)
   (kbd)
   (footnote)
   (passthrough)
@@ -59,6 +61,17 @@
   (audio_title)
   (attr_value)
 ] @text.literal
+
+(include_directive) @function
+(include_param) @parameter
+[
+    (antora_resource_version)
+    (antora_resource_component)
+    (antora_resource_module)
+] @parameter
+
+(antora_resource_family) @keyword
+(antora_resource_file) @parameter
 
 [
   (monospace)

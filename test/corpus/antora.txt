@@ -1,0 +1,17 @@
+=====
+antora
+=====
+
+include::v2.5@component:module:page$resource.txt[tags=one;two,leveloffset=+1]
+
+---
+
+(document
+  (include_directive
+    (antora_resource_version)
+    (antora_resource_component)
+    (antora_resource_module)
+    (antora_resource_family)
+    (antora_resource_file)
+    (include_param)
+    (include_param)))
