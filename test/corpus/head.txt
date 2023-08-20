@@ -2,20 +2,36 @@
 head
 ================
 
-= title1
-== title2
-=== title3
-==== title4
-===== title5
-== title2
+= title0
+== title1
+=== title2
+==== title3
+===== title4
+====== title5
+== title1
 
 ---
 
 (document
-  (title1)
-  (title2)
-  (title3)
-  (title4)
-  (title5)
-  (title2)
+  (title0
+    (title_marker)
+    (title_content))
+  (title1
+    (title_marker)
+    (title_content))
+  (title2
+    (title_marker)
+    (title_content))
+  (title3
+    (title_marker)
+    (title_content))
+  (title4
+    (title_marker)
+    (title_content))
+  (title5
+    (title_marker)
+    (title_content))
+  (title1
+    (title_marker)
+    (title_content))
 )

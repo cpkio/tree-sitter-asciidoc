@@ -247,7 +247,7 @@ module.exports = grammar({
         newline: _ => /\n|\r\n?/,
         word: _ =>
             new RegExp('[^' + PUNCTUATION_CHARACTERS_REGEX + ' \\t\\n\\r]+'),
-        whitespace: _ => /[ \t]+/,
+        whitespace: _ => /[  \t]+/,
         _inline_element: $ =>
             choice(
                 $.emphasis,
