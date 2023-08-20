@@ -262,8 +262,7 @@ module.exports = grammar({
                 $.links,
                 $.xref,
                 $.highlight,
-                $.line,
-                /\s/,
+                $.line
             ),
         kbd: $ => seq('kbd:[', optional($.kbd_content), ']'),
         kbd_content: _ => /\w+(\+\w+)?/,
