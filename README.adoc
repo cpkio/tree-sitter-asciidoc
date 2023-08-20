@@ -1,37 +1,3 @@
 = tree-sitter-asciidoc
 
-A asciidoc parser for tree-sitter.
-
-This project has many work to do here, and can work on for little docs only.
-
-== Use in neovim
-
-add this codes in your config file:
-
-[, lua]
-----
-local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-parser_config.asciidoc = {
-    install_info = {
-        url = '~/tree-sitter-asciidoc', -- local path or git repo
-        files = { 'src/parser.c' }, -- note that some parsers also require src/scanner.c or src/scanner.cc
-        -- optional entries:
-        branch = 'master', -- default branch in case of git repo if different from master
-        generate_requires_npm = false, -- if stand-alone parser without npm dependencies
-        requires_generate_from_grammar = false, -- if folder contains pre-generated src/parser.c
-    },
-    filetype = 'asciidoc', -- if filetype does not match the parser name
-}
-----
-
-then run `:TSInstall asciidoc` .
-
-WARNING: this may frozen your neovim. Use it by your own risk!!!
-
-=== Code highlight
-
-If you need code highlight, copy queries to _path-to-nvim-treesitter/asciidoc_. such as ~/home/.local/share/nvim/lazy/nvim-treesitter/queries/asciidoc
-
-=== outline
-
-this plugin support outline by aerial. just as above, copy queries dir to aerial's queries dir.
+Forked from https://github.com/cathaysia/tree-sitter-asciidoc[here], probably will PR later.
