@@ -1,0 +1,35 @@
+================
+attributes
+================
+
+:my-attr: My Attribute
+
+:sections: Какой-то текст
+
+:!sections: Какой-то текст
+
+:my-attr!: My Attribute
+
+---
+
+(document
+  (attribute
+    (attr_mark)
+    (attr_name)
+    (attr_mark)
+    (attr_value))
+  (attribute
+    (attr_mark)
+    (attr_name)
+    (attr_mark)
+    (attr_value))
+  (attribute
+    (attr_mark)
+    (attr_name)
+    (attr_mark)
+    (attr_value))
+  (attribute
+    (attr_mark)
+    (attr_name)
+    (attr_mark)
+    (attr_value)))
