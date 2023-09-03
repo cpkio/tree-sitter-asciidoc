@@ -23,7 +23,7 @@ module.exports = grammar({
 
         _newline: _ => /\n|\r\n?/,
 
-        _emptyline: $ => prec.right(repeat1(seq($._newline, repeat(' '), $._newline))),
+        _emptyline: $ => repeat1(seq($._newline, repeat(' '))),
 
         _block: $ =>
             prec(100,
@@ -126,7 +126,7 @@ module.exports = grammar({
             seq(
                 '*',
                 ' ',
-                prec.right(repeat1($._text)),
+                prec.right(repeat1($._text)), // Это правило обеспечивает «жадный» захват в токен строк, следующих за строкой с маркером списка
             ),
 
 
@@ -327,11 +327,14 @@ module.exports = grammar({
             ),
 
         include_directive: $ =>
-            seq(
-                'include::',
-                $._antora_resource,
-                $._include_params,
-                choice('\n', $.eof)
+            prec(100,
+              seq(
+                  'include',
+                  '::',
+                  $._antora_resource,
+                  $._include_params,
+                  choice($._newline, $.eof)
+              ),
             ),
 
         _include_params: $ =>
