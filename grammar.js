@@ -1,7 +1,7 @@
 const common = require('./common/grammar.js')
 
 const PUNCTUATION_CHARACTERS_REGEX = '!-/:-@\\[-`\\{-~'
-// prettier-ignore
+
 const PUNCTUATION_CHARACTERS_ARRAY = [
     '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<',
     '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
@@ -10,29 +10,40 @@ const PUNCTUATION_CHARACTERS_ARRAY = [
 module.exports = grammar({
     name: 'asciidoc',
     extras: _ => [],
+    inline: $ => [],
+    conflicts: $ => [
+    ],
+    precedences: $ => [],
     externals: $ => [$.eof],
 
     rules: {
         document: $ => repeat($._block),
 
-        _emptyline: $ => seq(optional($._whitespace), '\n'),
+        _whitespace: _ => /[  ]+/, // space & non-breaking space
+
+        _newline: _ => /\n|\r\n?/,
+
+        _emptyline: $ => prec.right(repeat1(seq($._newline, repeat(' '), $._newline))),
 
         _block: $ =>
-            choice(
-                $._emptyline,
-                $.title0,
-                $.title1,
-                $.title2,
-                $.title3,
-                $.title4,
-                $.title5,
-                $.comment,
-                $.attribute,
-                $.paragraph,
-                $.include_directive,
-                $.line_breaks,
-                $.page_breaks,
-                $._titled_block,
+            prec(100,
+                choice(
+                    $._emptyline,
+                    $.title0,
+                    $.title1,
+                    $.title2,
+                    $.title3,
+                    $.title4,
+                    $.title5,
+                    $.comment,
+                    $.attribute,
+                    $.paragraph,
+                    $.list,
+                    $.include_directive,
+                    $.line_breaks,
+                    $.page_breaks,
+                    $._titled_block,
+                ),
             ),
 
         _titled_block: $ =>
@@ -85,44 +96,45 @@ module.exports = grammar({
         // Admonitions
         _admonitions: $ =>
             choice($.note, $.tip, $.important, $.caution, $.warning),
+
         note: $ => choice($._note_line, $._note_block),
         _note_line: _$ => seq('NOTE: ', /.+\n?/),
         _note_block: _$ => seq('[NOTE]\n', '----\n', repeat(/.+\n/), '----\n'),
+
         tip: $ => choice($._tip, $._tip_block),
         _tip: _$ => seq('TIP: ', /.+\n?/),
         _tip_block: _$ => seq('[TIP]\n', '----\n', repeat(/.+\n/), '----\n'),
+
         important: $ => choice($._important, $._important_block),
         _important: _$ => seq('IMPORTANT: ', /.+\n?/),
         _important_block: _$ =>
             seq('[IMPORTANT]\n', '----\n', repeat(/.+\n/), '----\n'),
+
         caution: $ => choice($._caution, $._caution_block),
         _caution: _$ => seq('CAUTION: ', /.+\n?/),
         _caution_block: _$ =>
             seq('[CAUTION]\n', '----\n', repeat(/.+\n/), '----\n'),
+
         warning: $ => choice($._warning, $._warning_block),
         _warning: _$ => seq('WARNING: ', /.+\n?/),
         _warning_block: _$ =>
             seq('[WARNING]\n', '----\n', repeat(/.+\n/), '----\n'),
 
         // list
-        list: $ => seq(repeat1($.list_item), '\n'),
+        list: $ => prec.left(50, repeat1($.list_item)),
         list_item: $ =>
-            seq(
-                alias(
-                    choice(
-                        $._unordered_list_mark,
-                        $._ordered_list_mark,
-                        $._checklist_mark,
-                    ),
-                    $.list_item_mark,
+            prec.right(40,
+                seq(
+                    '*',
+                    ' ',
+                    repeat1($._text),
                 ),
-                ' ',
-                alias($._line, $.list_item_content),
-                /\n/,
             ),
-        _unordered_list_mark: _ => /[\*\-]+/,
-        _ordered_list_mark: _ => choice(/\.+/, /0?\d+\./, /[\w\P{M}]\./),
-        _checklist_mark: _ => /\* \[[\* x]\]/,
+
+
+        // _unordered_list_mark: _ => '*',
+        // _ordered_list_mark: _ => choice(/\.+/, /0?\d+\./, /[\w\P{M}]\./),
+        // _checklist_mark: _ => /\* \[[\* x]\]/,
 
         // code: $ =>
         //     seq(
@@ -136,7 +148,7 @@ module.exports = grammar({
         // code_language: _ => /\w+/,
         // code_content: _ => repeat1(/.+\n/),
 
-        comment: _$ => seq('// ', /.*\n?/),
+        comment: $ => seq('// ', /.*/, $._newline),
 
         line_breaks: _ => seq(/[\-\*]{3}\n\n/),
 
@@ -188,28 +200,22 @@ module.exports = grammar({
                 '\n',
             ),
 
-        paragraph: $ => prec.right(repeat1($._inline_element)),
+        paragraph: $ => prec.right(0, repeat1($._text)),
 
-        _line: $ =>
-            prec.right(
-                seq(
-                    repeat1(
-                        choice(
-                            $._word,
-                            $._whitespace,
-                            common.punctuation_without($, []),
-                        ),
+        _text: $ =>
+            seq(
+                repeat1(
+                    choice(
+                        $._word,
+                        $._whitespace,
+                        common.punctuation_without($, []),
                     ),
-                    choice(repeat1($._newline), $.eof)
                 ),
+                $._newline
             ),
 
-        _newline: _ => /\n|\r\n?/,
-
         _word: _ =>
-            new RegExp('[^' + PUNCTUATION_CHARACTERS_REGEX + ' \\t\\n\\r]+'),
-
-        _whitespace: _ => /[  \t]+/,
+            new RegExp('[^' + PUNCTUATION_CHARACTERS_REGEX + '  \\t\\n\\r]+'),
 
         _inline_element: $ =>
             choice(
@@ -225,7 +231,6 @@ module.exports = grammar({
                 $.links,
                 $.xref,
                 $.highlight,
-                $._line
             ),
 
         kbd: $ => seq('kbd:[', optional($.kbd_content), ']'),
