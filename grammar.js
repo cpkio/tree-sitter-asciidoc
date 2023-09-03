@@ -121,14 +121,12 @@ module.exports = grammar({
             seq('[WARNING]\n', '----\n', repeat(/.+\n/), '----\n'),
 
         // list
-        list: $ => prec.left(50, repeat1($.list_item)),
-        list_item: $ =>
-            prec.right(40,
-                seq(
-                    '*',
-                    ' ',
-                    repeat1($._text),
-                ),
+        // list: $ => prec(50, repeat1($.list_item)),
+        list: $ =>
+            seq(
+                '*',
+                ' ',
+                prec.right(repeat1($._text)),
             ),
 
 
