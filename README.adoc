@@ -1,0 +1,63 @@
+= tree-sitter-asciidoc
+
+This is Asciidoc parser (early WIP) for `nvim-treesitter`.
+
+Original Asciidoc parser and converter (_Asciidoctor_) is written in Ruby.
+Antora uses _Asciidoctor.js_ (Ruby transpiled to JS).
+
+This parser is designed as a writers tool, so it's syntax highlighting would
+help you see if you made an error. This includes parsing option block
+parameters (table `cols=` for example) to help you write them correctly, or
+disabling highlights for literal blocks to indicate there would be no parsing
+inside (there might be ~coffee~ injections later). Parser "knows" what
+parameters are valid for xrefs, includes or icon macros, so it would highlight
+known ones. On the other side, it can understand whether syntax of
+non-Asciidoctor parameters (`[parameter="value;value"]`) is correct or not.
+
+I know you can inject other parsers into current parser context (highlight
+`[source,json]` blocks with `tree-sitter-json` for example), but this feature
+is not available yet. This is my first TS parser after all.
+
+I use Antora, so this parser supports Antora resource locator strings
+(`+include::v1@Component:module:page$index.adoc[]+`).
+
+== Installation (for now)
+
+....
+tree-sitter generate
+gcc --std=c99 -o asciidoc.so -shared src/parser.c src/scanner.c -Os -Isrc/
+....
+
+Copy the parser and queries to whatever.
+
+== Parsing compications
+
+I didn't inspect Asciidoctor code, but it seems Asciidoctor parses documents
+in reverse, from last line to first. This would make it quite easy to parse
+certain Asciidoc expressions. `tree-sitter` cannot parse document from back to
+front, so we have to use some tricks.
+
+`tree-sitter-asciidoc` uses external parser code to detect distinct Asciidoc
+expressions, which are called *markers*. When a marker is detected, external
+parser returns a token, and then `tree-sitter` does the heavy lifting of
+switching states.
+
+== Contributing
+
+Asciidoc is very well thought through. It is complex and flexible, and the
+parser should be too. Because of that it absolutely needs your input.
+
+We need:
+
+- refactoring parser code by real programmers;
+
+- detection of languages and injection of other parsers in literal blocks
+  (based on preceding option block);
+
+- discussion on what TS context should be assigned to what;
+
+- MORE TESTS!
+
+I'd like to undeline the last one; we need LOTS of test cases. I've already
+done a few simple ones, but we need coverage for each element in every
+possible situation.
