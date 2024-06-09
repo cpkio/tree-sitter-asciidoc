@@ -1,0 +1,152 @@
+====|||
+delimited-blocks
+====|||
+====
+Testing some random paragraph.
+====
+
+=====
+Testing some random paragraph.
+=====
+
+======
+Testing some random paragraph.
+======
+
+
+----
+Testing some random paragraph.
+----
+
+....
+Testing some random paragraph.
+....
+
+--
+Testing some random paragraph.
+--
+
+****
+Testing some random paragraph.
+****
+
+++++
+Testing some random paragraph.
+++++
+
+======
+Example2 inside Example3
+=====
+Testing some random paragraph.
+=====
+======
+
+======
+Example1 inside Example3
+====
+Testing some random paragraph.
+====
+======
+
+=====
+Example1 inside Example2
+====
+Testing some random paragraph.
+====
+=====
+
+====
+----
+Testing some random paragraph.
+----
+====
+
+--
+======
+Testing some random paragraph.
+======
+--
+
+---|||
+(document
+  (block_example1
+    (block_example_separator1)
+    (paragraph)
+    (block_example_separator1))
+  (emptyline)
+  (block_example2
+    (block_example_separator2)
+    (paragraph)
+    (block_example_separator2))
+  (emptyline)
+  (block_example3
+    (block_example_separator3)
+    (paragraph)
+    (block_example_separator3))
+  (emptyline)
+  (emptyline)
+  (block_listing
+    (block_listing_separator)
+    (block_listing_separator))
+  (emptyline)
+  (block_literal
+    (block_literal_separator)
+    (block_literal_separator))
+  (emptyline)
+  (block_open
+    (block_open_separator)
+    (paragraph)
+    (block_open_separator))
+  (emptyline)
+  (block_sidebar
+    (block_sidebar_separator)
+    (paragraph)
+    (block_sidebar_separator))
+  (emptyline)
+  (block_pass
+    (block_passthrough_separator)
+    (paragraph)
+    (block_passthrough_separator))
+  (emptyline)
+  (block_example3
+    (block_example_separator3)
+    (paragraph)
+    (block_example2
+      (block_example_separator2)
+      (paragraph)
+      (block_example_separator2))
+    (block_example_separator3))
+  (emptyline)
+  (block_example3
+    (block_example_separator3)
+    (paragraph)
+    (block_example1
+      (block_example_separator1)
+      (paragraph)
+      (block_example_separator1))
+    (block_example_separator3))
+  (emptyline)
+  (block_example2
+    (block_example_separator2)
+    (paragraph)
+    (block_example1
+      (block_example_separator1)
+      (paragraph)
+      (block_example_separator1))
+    (block_example_separator2))
+  (emptyline)
+  (block_example1
+    (block_example_separator1)
+    (block_listing
+      (block_listing_separator)
+      (block_listing_separator))
+    (block_example_separator1))
+  (emptyline)
+  (block_open
+    (block_open_separator)
+    (block_example3
+      (block_example_separator3)
+      (paragraph)
+      (block_example_separator3))
+    (block_open_separator)))
+

@@ -1,0 +1,84 @@
+====
+includes
+====
+The algorithm is used by health care providers to screen patients for
+"high-risk care management" intervention. Under this system, patients who have
+especially complex medical needs are automatically flagged by the algorithm.
+include::LiveFeed:contracts:page$index.adoc[leveloffset=+1, lines="21..42"]
+
+Once selected, they may receive additional care resources, like more attention
+from doctors. As the researchers note, the system is widely used around the
+United States, and for good reason. Extra benefits like dedicated nurses and
+more primary care appointments are costly for health care providers.
+
+include::LiveFeed:contracts:page$index.adoc[tag=nope, tags="some; any", leveloffset=+1, lines="21..42"]
+
+include::Some/Dir/index.adoc[]
+
+include::./Some/Dir/index.adoc[]
+
+include::../Some/Dir/index.adoc[]
+
+include::../../Some/Dir/index.adoc[]
+
+---
+(document
+  (paragraph)
+  (include_directive
+    (include_marker)
+    (antora_resource_component)
+    (antora_resource_module)
+    (antora_resource_family)
+    (file_path)
+    (inline_option_block_marker_start)
+    (leveloffset)
+    (lines)
+    (inline_option_block_marker_end))
+  (emptyline)
+  (paragraph)
+  (emptyline)
+  (include_directive
+    (include_marker)
+    (antora_resource_component)
+    (antora_resource_module)
+    (antora_resource_family)
+    (file_path)
+    (inline_option_block_marker_start)
+    (tags)
+    (include_tag)
+    (tags)
+    (include_tag)
+    (tags
+      (include_tag))
+    (tags)
+    (leveloffset)
+    (lines)
+    (inline_option_block_marker_end))
+  (emptyline)
+  (include_directive
+    (include_marker)
+    (file_path)
+    (inline_option_block_marker_start)
+    (inline_option_block_marker_end))
+  (emptyline)
+  (include_directive
+    (include_marker)
+    (file_path)
+    (file_path)
+    (inline_option_block_marker_start)
+    (inline_option_block_marker_end))
+  (emptyline)
+  (include_directive
+    (include_marker)
+    (file_path)
+    (file_path)
+    (inline_option_block_marker_start)
+    (inline_option_block_marker_end))
+  (emptyline)
+  (include_directive
+    (include_marker)
+    (file_path)
+    (file_path)
+    (inline_option_block_marker_start)
+    (inline_option_block_marker_end)))
+

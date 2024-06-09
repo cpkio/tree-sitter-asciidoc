@@ -1,0 +1,54 @@
+====
+admonitions
+====
+= Section
+
+NOTE: The advice left many medical experts scratching their heads. The
+      coronavirus is a new pathogen, and little is known about the disease it
+      causes, called Covid-19, or how patients respond to common medications.
+
+TIP: The advice left many medical experts scratching their heads. The
+      coronavirus is a new pathogen, and little is known about the disease it
+      causes, called Covid-19, or how patients respond to common medications.
+
+IMPORTANT: The advice left many medical experts scratching their heads. The
+           coronavirus is a new pathogen, and little is known about the
+           disease it causes, called Covid-19, or how patients respond to
+           common medications.
+
+CAUTION: The advice left many medical experts scratching their heads. The
+         coronavirus is a new pathogen, and little is known about the disease
+         it causes, called Covid-19, or how patients respond to common
+         medications.
+
+WARNING: The advice left many medical experts scratching their heads. The
+         coronavirus is a new pathogen, and little is known about the disease
+         it causes, called Covid-19, or how patients respond to common
+         medications.
+
+---
+(document
+  (title0
+    (title_marker)
+    (title_content))
+  (emptyline)
+  (admonition
+    (admonition_note_label)
+    (paragraph))
+  (emptyline)
+  (admonition
+    (admonition_tip_label)
+    (paragraph))
+  (emptyline)
+  (admonition
+    (admonition_important_label)
+    (paragraph))
+  (emptyline)
+  (admonition
+    (admonition_caution_label)
+    (paragraph))
+  (emptyline)
+  (admonition
+    (admonition_warning_label)
+    (paragraph)))
+

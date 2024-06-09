@@ -1,0 +1,32 @@
+====
+inlines-emphasis
+====
+_The government’s Office_ of National Statistics released figures indicating
+that deaths could be at least 10 percent higher than the official toll —
+12,107 as of Tuesday — which does not take into account many people.
+
+The government’s Office of National Statistics released figures indicating
+that deaths could be at least 10 percent higher than _the official toll —
+12,107 as of Tuesday_ — which does not take into account many people.
+
+The government’s Office of National Statistics released figures indicating
+that deaths could be at least 10 percent higher than the official toll —
+12,107 as of Tuesday — which _does not take into account many people_.
+
+---
+(document
+  (paragraph
+    (emphasis
+      (emphasis_marker_start)
+      (emphasis_marker_end)))
+  (emptyline)
+  (paragraph
+    (emphasis
+      (emphasis_marker_start)
+      (emphasis_marker_end)))
+  (emptyline)
+  (paragraph
+    (emphasis
+      (emphasis_marker_start)
+      (emphasis_marker_end))))
+

@@ -1,0 +1,46 @@
+====
+Simple table
+====
+.Table
+[%header,cols="1,1,1"]
+|===
+| H1
+| H2
+
+| cell
+
+| cell 2
+|===
+
+---
+(document
+  (block_title
+    (block_title_marker))
+  (option_block
+    (block_option_marker_start)
+    (parameter_recognized)
+    (option_table
+      (cols)
+      (cols
+        (table_cell_multiplication_factor)
+        (table_cell_multiplication_factor)
+        (table_cell_multiplication_factor))
+      (cols))
+    (block_option_marker_end))
+  (block_table
+    (block_table_separator1)
+    (table_cell
+      (table_cell_marker)
+      (paragraph))
+    (table_cell
+      (table_cell_marker)
+      (paragraph)
+      (emptyline))
+    (table_cell
+      (table_cell_marker)
+      (paragraph)
+      (emptyline))
+    (table_cell
+      (table_cell_marker)
+      (paragraph))
+    (block_table_separator1)))

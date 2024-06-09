@@ -1,0 +1,29 @@
+====
+Paragraphs
+====
+
+With more than 96 percent of ballots counted as of Tuesday
+afternoon, Mr. Zelensky’s party, Sluha Narodu ("Servant of
+the People") — named after the TV series in which he
+starred — appears to have won about 43 percent of the
+popular vote and more than 250 of the 424 seats that were
+contested. Sluha Narodu is the first party to secure an
+outright parliamentary majority since Ukraine became
+independent in 1991.
+
+The leading pro-Russia party came in second, and the party
+of former Prime Minister Yulia V. Tymoshenko third. (The
+bloc headed by Mr. Poroshenko ranked fourth.) The newbie
+party Holos ("Voice"), which is led by a rock star and
+denounces the influence of oligarchs and established elites,
+is projected to win 20 seats; it is thought to be a natural
+ally of Mr. Zelensky’s. An estimated 70 percent of
+members-elect are newcomers.
+
+---
+(document
+  (emptyline)
+  (paragraph)
+  (emptyline)
+  (paragraph)
+)

@@ -1,0 +1,32 @@
+====
+Section headers (one \r\n at document start)
+====
+
+= Section0
+== Section1
+=== Section2
+==== Section3
+===== Section4
+====== Section5
+
+---
+(document
+  (emptyline)
+(title0
+  (title_marker)
+  (title_content))
+(title1
+  (title_marker)
+  (title_content))
+(title2
+  (title_marker)
+  (title_content))
+(title3
+  (title_marker)
+  (title_content))
+(title4
+  (title_marker)
+  (title_content))
+(title5
+  (title_marker)
+  (title_content)))

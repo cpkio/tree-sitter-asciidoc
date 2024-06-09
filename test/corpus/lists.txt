@@ -1,0 +1,95 @@
+====
+lists
+====
+* Students from Boston *_University_* to UCLA
+
+* Community College to Northwestern `University`
+  Community College to `+Northwestern+` University
+
+** The boom of {college} Minecraft {empty} servers has begun
+
+- Element
+- Element
+- Element
+
+.List title
+. Numbered
+* Unnumbered
+* Unnumbered
+. Numbered
+.. Numbered
+. Numbered
+* *Unnumbered*
+* Unnumbered
+
+---
+(document
+  (list_asterisk
+    (list_asterisk_marker)
+    (paragraph
+      (strong
+        (strong_marker_start)
+        (emphasis
+          (emphasis_marker_start)
+          (emphasis_marker_end))
+        (strong_marker_end))))
+  (emptyline)
+  (list_asterisk
+    (list_asterisk_marker)
+    (paragraph
+      (monospace
+        (monospace_marker_start)
+        (monospace_marker_end))
+      (monospace
+        (monospace_marker_start)
+        (inline_passthrough
+          (inline_passthrough_marker_start)
+          (inline_passthrough_marker_end))
+        (monospace_marker_end))))
+  (emptyline)
+  (list_asterisk
+    (list_asterisk_marker)
+    (paragraph
+      (attribute_reference)
+      (replacement)))
+  (emptyline)
+  (list_hyphen
+    (list_hyphen_marker)
+    (paragraph))
+  (list_hyphen
+    (list_hyphen_marker)
+    (paragraph))
+  (list_hyphen
+    (list_hyphen_marker)
+    (paragraph))
+  (emptyline)
+  (block_title
+    (block_title_marker))
+  (list_decimal_
+    (list_marker)
+    (paragraph))
+  (list_asterisk
+    (list_asterisk_marker)
+    (paragraph))
+  (list_asterisk
+    (list_asterisk_marker)
+    (paragraph))
+  (list_decimal_
+    (list_marker)
+    (paragraph))
+  (list_decimal_
+    (list_marker)
+    (paragraph))
+  (list_decimal_
+    (list_marker)
+    (paragraph))
+  (list_asterisk
+    (list_asterisk_marker)
+    (paragraph
+      (strong
+        (strong_marker_start)
+        (strong_marker_end))))
+  (list_asterisk
+    (list_asterisk_marker)
+    (paragraph)))
+

@@ -30,6 +30,14 @@ gcc --std=c99 -o asciidoc.so -shared src/parser.c src/scanner.c -Os -Isrc/
 
 Copy the parser and queries to whatever.
 
+== Tests
+
+....
+tree-sitter test
+....
+
+See the `test\corpus` folder.
+
 == Parsing compications
 
 I didn't inspect Asciidoctor code, but it seems Asciidoctor parses documents

@@ -1,0 +1,71 @@
+====
+Paragraphs with inlines
+====
+
+= Section title 0
+:!document-attribute: document {wide} attribute
+
+
+But the streamer in the panel is far from a big-time broadcaster. Known as
+Michael "mmDust" \Duarte, he is a `+Twitch+` affiliate known *for speed running
+Resident Evil* 7 who currently holds *world records* for beating _the game_ as
+~quickly as possible~. `group_by` the +panel+, #mmDust# initially doubled down on his
+comments.
+
+
+
+But the streamer in the panel is far from a big-time broadcaster. Known as
+Michael "mmDust" Duarte, he is a Twitch affiliate known for speed running
+Resident Evil 7 who {nbsp} holds world records for beating the game as
+quickly as {counter:seq1} possible. Since the panel, mmDust initially doubled down on his
+comments.
+
+---
+(document
+  (emptyline)
+  (title0
+    (title_marker)
+    (title_content))
+  (attribute
+    (attribute_marker_start_neg)
+    (attr_name)
+    (attribute_marker_end)
+    (attr_value
+      (attribute_reference)))
+  (emptyline)
+  (emptyline)
+  (paragraph
+    (escape)
+    (monospace
+      (monospace_marker_start)
+      (inline_passthrough
+        (inline_passthrough_marker_start)
+        (inline_passthrough_marker_end))
+      (monospace_marker_end))
+    (strong
+      (strong_marker_start)
+      (strong_marker_end))
+    (strong
+      (strong_marker_start)
+      (strong_marker_end))
+    (emphasis
+      (emphasis_marker_start)
+      (emphasis_marker_end))
+    (subscript
+      (subscript_marker_start)
+      (subscript_marker_end))
+    (monospace
+      (monospace_marker_start)
+      (monospace_marker_end))
+    (inline_passthrough
+      (inline_passthrough_marker_start)
+      (inline_passthrough_marker_end))
+    (highlight
+      (highlight_marker_start)
+      (highlight_marker_end)))
+  (emptyline)
+  (emptyline)
+  (emptyline)
+    (paragraph
+      (replacement)
+      (attribute_reference)))

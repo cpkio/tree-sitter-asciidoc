@@ -1,0 +1,21 @@
+====
+comments
+====
+//comment
+
+////
+Some text here
+////
+
+// another comment
+
+---
+(document
+  (comment
+    (comment_marker))
+  (emptyline)
+  (block_comment)
+  (emptyline)
+  (comment
+    (comment_marker)))
+
