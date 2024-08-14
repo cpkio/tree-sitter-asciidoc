@@ -1,0 +1,25 @@
+====
+Callouts
+====
+[source,bash]
+----
+curl --location --request GET 'https://example.com' \
+--header 'Authorization: Bearer Token' <.>
+----
+<.> Authorization token
+
+---
+(document
+  (option_block
+    (block_option_marker_start)
+    (block_type)
+    (attribute)
+    (block_option_marker_end))
+  (block_listing
+    (block_listing_separator)
+    (callout_mark)
+    (block_listing_separator))
+  (callout
+    (callout_mark)
+    (paragraph)))
+
