@@ -64,20 +64,17 @@ include::../../Some/Dir/index.adoc[]
   (include_directive
     (include_marker)
     (file_path)
-    (file_path)
     (inline_option_block_marker_start)
     (inline_option_block_marker_end))
   (emptyline)
   (include_directive
     (include_marker)
     (file_path)
-    (file_path)
     (inline_option_block_marker_start)
     (inline_option_block_marker_end))
   (emptyline)
   (include_directive
     (include_marker)
-    (file_path)
     (file_path)
     (inline_option_block_marker_start)
     (inline_option_block_marker_end)))
