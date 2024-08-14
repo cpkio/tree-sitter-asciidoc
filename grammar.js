@@ -1020,7 +1020,7 @@ module.exports = grammar({
                           '"')
                         ),
 
-        _filepath: $ => /([\w]+\/)*([\w\-\.]+)+\.\w{1,6}/,
+        _filepath: $ => /(([\d\w\-~_%]+|\.\.|\.)\/)*([\d\w\-~_%]+)+\.\w{1,6}/,
 
         _antora_resource: $ =>
             seq(
@@ -1028,11 +1028,15 @@ module.exports = grammar({
                     alias(/(\.\/|(\.\.\/)+)/, $.file_path),
                     $.attribute_reference,
                     seq(
+                        seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
+                        seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$')
+                    ),
+                    seq(
                         optional(seq(alias(choice($._identifier, $.attribute_reference), $.antora_resource_version), '@')),
                         seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_component), ':'),
                         seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
                         seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$')
-                    )
+                    ),
                 )),
                 alias($._filepath, $.file_path)
             ),
