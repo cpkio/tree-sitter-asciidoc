@@ -1,6 +1,6 @@
-====
+====|||
 Callouts
-====
+====|||
 [source,bash]
 ----
 curl --location --request GET 'https://example.com' \
@@ -8,7 +8,7 @@ curl --location --request GET 'https://example.com' \
 ----
 <.> Authorization token
 
----
+---|||
 (document
   (option_block
     (block_option_marker_start)

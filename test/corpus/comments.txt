@@ -1,6 +1,6 @@
-====
+====|||
 comments
-====
+====|||
 //comment
 
 ////
@@ -9,7 +9,7 @@ Some text here
 
 // another comment
 
----
+---|||
 (document
   (comment
     (comment_marker))

@@ -1,6 +1,6 @@
-====
+====|||
 includes
-====
+====|||
 The algorithm is used by health care providers to screen patients for
 "high-risk care management" intervention. Under this system, patients who have
 especially complex medical needs are automatically flagged by the algorithm.
@@ -21,7 +21,7 @@ include::../Some/Dir/index.adoc[]
 
 include::../../Some/Dir/index.adoc[]
 
----
+---|||
 (document
   (paragraph)
   (include_directive

@@ -1,6 +1,6 @@
-====
+====|||
 attributes
-====
+====|||
 :valid-attribute:
 :!negated-attribute:
 :negated-attribute!:
@@ -10,7 +10,7 @@ attributes
 :negated-attribute!: Rocket League is {attr-reference} in a big way
 
 
----
+---|||
 (document
   (attribute
     (attribute_marker_start)

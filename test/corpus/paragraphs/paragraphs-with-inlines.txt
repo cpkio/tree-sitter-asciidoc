@@ -1,6 +1,6 @@
-====
+====|||
 Paragraphs with inlines
-====
+====|||
 
 = Section title 0
 :!document-attribute: document {wide} attribute
@@ -20,7 +20,7 @@ Resident Evil 7 who {nbsp} holds world records for beating the game as
 quickly as {counter:seq1} possible. Since the panel, mmDust initially doubled down on his
 comments.
 
----
+---|||
 (document
   (emptyline)
   (title0

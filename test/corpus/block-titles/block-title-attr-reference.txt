@@ -1,6 +1,6 @@
-====
+====|||
 Block title with attribute reference
-====
+====|||
 
 .My {my-block} title
 With more than 96 percent of ballots counted as of Tuesday
@@ -12,7 +12,7 @@ contested. Sluha Narodu is the first party to secure an
 outright parliamentary majority since Ukraine became
 independent in 1991.
 
----
+---|||
 (document
   (emptyline)
   (block_title

@@ -1,6 +1,6 @@
-====
+====|||
 Simple table with include
-====
+====|||
 .Table
 [%header,cols="1,1,1"]
 |===
@@ -16,7 +16,7 @@ cell
 cell 2
 |===
 
----
+---|||
 (document
   (block_title
     (block_title_marker))

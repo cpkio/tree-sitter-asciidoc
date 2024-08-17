@@ -1,6 +1,6 @@
-====
-Section headers (emptylines in between sections)
-====
+====|||
+Section headers (emptylines in between sections [and after last one!])
+====|||
 = Section0
 
 == Section1
@@ -12,7 +12,8 @@ Section headers (emptylines in between sections)
 ===== Section4
 
 ====== Section5
----
+
+---|||
 (document
 (title0
   (title_marker)

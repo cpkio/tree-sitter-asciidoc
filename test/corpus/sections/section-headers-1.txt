@@ -1,6 +1,6 @@
-====
+====|||
 Section headers (one \r\n at document start)
-====
+====|||
 
 = Section0
 == Section1
@@ -9,7 +9,7 @@ Section headers (one \r\n at document start)
 ===== Section4
 ====== Section5
 
----
+---|||
 (document
   (emptyline)
 (title0

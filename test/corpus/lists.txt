@@ -1,6 +1,6 @@
-====
+====|||
 lists
-====
+====|||
 * Students from Boston *_University_* to UCLA
 
 * Community College to Northwestern `University`
@@ -22,7 +22,7 @@ lists
 * *Unnumbered*
 * Unnumbered
 
----
+---|||
 (document
   (list_asterisk
     (list_asterisk_marker)

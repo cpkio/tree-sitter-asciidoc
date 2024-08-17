@@ -1,6 +1,6 @@
-====
+====|||
 Page break
-====
+====|||
 
 With more than 96 percent of ballots counted as of Tuesday
 afternoon, Mr. Zelensky’s party, Sluha Narodu ("Servant of
@@ -20,7 +20,7 @@ is projected to win 20 seats; it is thought to be a natural
 ally of Mr. Zelensky’s. An estimated 70 percent of
 members-elect are newcomers.
 
----
+---|||
 (document
   (emptyline)
   (paragraph)

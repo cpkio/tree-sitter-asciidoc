@@ -1,6 +1,6 @@
-====
+====|||
 Section headers (\r\n\r\n = emptyline at document start)
-====
+====|||
 
 
 = Section0
@@ -10,7 +10,7 @@ Section headers (\r\n\r\n = emptyline at document start)
 ===== Section4
 ====== Section5
 
----
+---|||
 (document
 (emptyline)
 (emptyline)

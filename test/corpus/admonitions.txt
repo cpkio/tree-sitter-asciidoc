@@ -1,6 +1,6 @@
-====
+====|||
 admonitions
-====
+====|||
 = Section
 
 NOTE: The advice left many medical experts scratching their heads. The
@@ -26,7 +26,7 @@ WARNING: The advice left many medical experts scratching their heads. The
          it causes, called Covid-19, or how patients respond to common
          medications.
 
----
+---|||
 (document
   (title0
     (title_marker)
