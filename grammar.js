@@ -35,6 +35,7 @@ module.exports = grammar({
         $.highlight_marker_end,
         $.include_marker,
         $.image_marker,
+        $.image_inline_marker,
         $.xref_marker,
         $.footnote_marker,
         $.icon_marker,
@@ -124,6 +125,7 @@ module.exports = grammar({
                 $.list_decimal_,
                 $.description_list,
                 $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
+                $.image_directive,
                 $.attribute,
                 $.page_break,
                 $.thematic_break,
@@ -178,6 +180,7 @@ module.exports = grammar({
                         $.link_macro,
                         $.cross_reference,
                         $.pass_macro,
+                        $.image_macro,
                     ),
                 )),
 
@@ -944,6 +947,14 @@ module.exports = grammar({
               ),
             ),
 
+        image_macro: $ => prec.left(10,
+              seq(
+                  $.image_inline_marker,
+                  $._antora_resource,
+                  $.inline_option_block_marker_start,
+                  $.inline_option_block_marker_end,
+              )),
+
         image_directive: $ => prec.left(100,
               seq(
                   $.image_marker,
@@ -1020,25 +1031,28 @@ module.exports = grammar({
                           '"')
                         ),
 
-        _filepath: $ => /(([\d\w\-~_%]+|\.\.|\.)\/)*([\d\w\-~_%]+)+\.\w{1,6}/,
+        _filepath: $ => /(([\d\w\-~_%]+|\.\.|\.)\/)*([\d\w\-~_%]+\.)+\w{1,6}/,
 
         _antora_resource: $ =>
-            seq(
-                optional(choice(
-                    alias(/(\.\/|(\.\.\/)+)/, $.file_path),
-                    $.attribute_reference,
-                    seq(
-                        seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
-                        seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$')
-                    ),
-                    seq(
-                        optional(seq(alias(choice($._identifier, $.attribute_reference), $.antora_resource_version), '@')),
-                        seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_component), ':'),
-                        seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
-                        seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$')
-                    ),
-                )),
-                alias($._filepath, $.file_path)
+            choice(
+                $.attribute_reference,
+                alias($._filepath, $.file_path),
+                seq(
+                    seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$'),
+                    alias($._filepath, $.file_path)
+                ),
+                seq(
+                    seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
+                    seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$'),
+                    alias($._filepath, $.file_path)
+                ),
+                seq(
+                    optional(seq(alias(choice($._identifier, $.attribute_reference), $.antora_resource_version), '@')),
+                    seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_component), ':'),
+                    seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
+                    seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$'),
+                    alias($._filepath, $.file_path)
+                ),
             ),
 
         attribute_reference: $ => seq(
@@ -1284,8 +1298,7 @@ module.exports = grammar({
         _description_list_marker: $ => choice('::', ':::', '::::', ';;'),
 
         description_list: $ => prec.right(10, seq(
-            $._text,
-            $._description_list_marker,
+            alias(seq($._text, $._description_list_marker), $.description_list_marker),
             repeat1(
                 choice(
                     $._newline,
@@ -1322,7 +1335,7 @@ module.exports = grammar({
         ),
 
         link_macro: $ =>
-          prec.left(10, seq(
+          seq(
               $.link_marker,
               choice(
                 $.http,
@@ -1350,7 +1363,7 @@ module.exports = grammar({
                 ),
               )),
               $.inline_option_block_marker_end,
-          )),
+          ),
 
         cross_reference: $ => seq(
             $.crossreference_marker_start,
@@ -1442,7 +1455,7 @@ module.exports = grammar({
             '%footer',
             '%autowidth'
         ),
-        _list_options: $ => choice('%reverse'),
+        _list_options: $ => choice('%reversed'),
 
         _callout: $ => seq(
             $._whitespace,

@@ -27,6 +27,8 @@
 #define CHAR_THIN_SPACE 8201
 #define CHAR_HAIR_SPACE 8202
 #define CHAR_COMMA ','
+#define CHAR_LDQUO 171
+#define CHAR_RDQUO 187
 
 #define CHAR_HIGHLIGHT '#'
 #define CHAR_OPTION_START '['

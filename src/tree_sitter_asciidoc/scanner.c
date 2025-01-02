@@ -5,6 +5,7 @@
 
 #include "chars.c"
 #include "tokens.h"
+#include "tree_sitter_asciidoc/chars.h"
 #include "scanner.h"
 
 static ADOCScanner* adoc_scanner_create()
@@ -116,6 +117,7 @@ static Match is_keyword(ADOCScanner* scanner, int position)
   const char* keywords[] = {
     STR_INCLUDE,
     STR_IMAGE,
+    STR_IMAGE_INLINE,
     STR_XREF,
     STR_FOOTNOTE,
     STR_ANCHOR,
@@ -311,9 +313,10 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
     }
   }
 
-  if (scanner->lookahead == CHAR_CROSSREFERENCE_START &&
-    is_newline(scanner->lookbehind->stack[0]) &&
-    (valid_symbols[T_PAGE_BREAK] || valid_symbols[T_CALLOUT_MARKER_TO])
+  if (
+    (valid_symbols[T_PAGE_BREAK] || valid_symbols[T_CALLOUT_MARKER_TO]) &&
+    scanner->lookahead == CHAR_CROSSREFERENCE_START &&
+    is_newline(scanner->lookbehind->stack[0])
   ) {
     scanner->advance(scanner); // '<'
 
@@ -569,6 +572,10 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
   }
 
   if (
+    (valid_symbols[T_BLOCK_SIDEBAR_SEPARATOR]
+    || valid_symbols[T_THEMATIC_BREAK]
+    || valid_symbols[T_STRONG_MARKER_START]
+    || valid_symbols[T_STRONG_MARKER_END]) &&
     !(GET_BIT(IM_MONOSPACE)) &&
     !(GET_BIT(IM_LITERALBLOCK)) &&
     !(GET_BIT(IM_LISTINGBLOCK)) &&
@@ -827,7 +834,9 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
     }
     scanner->advance(scanner);
     if (
-      !is_word(scanner->lookahead)
+      // !is_word(scanner->lookahead)
+      is_newline_or_space(scanner->lookahead) ||
+      is_punctuation(scanner->lookahead)
     ) {
       CLEAR_BIT(IM_MONOSPACE);
       lexer->result_symbol = T_MONOSPACE_MARKER_END;
@@ -920,18 +929,16 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
 
   if (
     valid_symbols[T_CROSSREFERENCE_MARKER_START] &&
-    scanner->lookahead == CHAR_CROSSREFERENCE_START &&
-    !GET_BIT(IM_CROSSREFERENCE) &&
-    !GET_BIT(IM_XREFMACRO) &&
-    (
-      is_punctuation(scanner->lookbehind->stack[0]) ||
-      is_space(scanner->lookbehind->stack[0]) ||
-      is_newline(scanner->lookbehind->stack[0])
-    )
+    !GET_BIT(IM_LITERALBLOCK) &&
+    !GET_BIT(IM_LISTINGBLOCK)
   ) {
-    scanner->advance(scanner);
-    if(scanner->lookahead == CHAR_CROSSREFERENCE_START) {
-      scanner->advance(scanner);
+    if (scanner->lookahead == CHAR_CROSSREFERENCE_START) {
+      consume(scanner, 2);
+    }
+    if (
+      (scanner->lookahead != CHAR_CROSSREFERENCE_START) &&
+      match_before(scanner, STR_CROSSREFERENCE_START, strlen(STR_CROSSREFERENCE_START), match_newline_or_space)
+    ) {
       SET_BIT(IM_CROSSREFERENCE);
       lexer->result_symbol = T_CROSSREFERENCE_MARKER_START;
       return true;
@@ -940,22 +947,25 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
 
   if (
     valid_symbols[T_CROSSREFERENCE_MARKER_END] &&
-    scanner->lookahead == CHAR_CROSSREFERENCE_END &&
-    GET_BIT(IM_CROSSREFERENCE)
+    !GET_BIT(IM_LITERALBLOCK) &&
+    !GET_BIT(IM_LISTINGBLOCK)
   ) {
-    scanner->advance(scanner);
-    if(scanner->lookahead == CHAR_CROSSREFERENCE_END) {
+    if (scanner->lookahead == CHAR_CROSSREFERENCE_END) {
+      consume(scanner, 2);
+    }
+    if (
+      (scanner->lookahead != CHAR_CROSSREFERENCE_END) &&
+      match_before(scanner, STR_CROSSREFERENCE_END, strlen(STR_CROSSREFERENCE_END), match_any)
+    ) {
       CLEAR_BIT(IM_CROSSREFERENCE);
-      scanner->advance(scanner);
       lexer->result_symbol = T_CROSSREFERENCE_MARKER_END;
       return true;
     }
   }
-
   if (
     (valid_symbols[T_CROSSREFERENCE_MARKER_END] && valid_symbols[T_CROSSREFERENCE_SPLITTER]) &&
-    scanner->lookahead == ',' &&
-    GET_BIT(IM_CROSSREFERENCE)
+    GET_BIT(IM_CROSSREFERENCE) &&
+    scanner->lookahead == CHAR_COMMA
   ) {
     scanner->advance(scanner);
     lexer->result_symbol = T_CROSSREFERENCE_SPLITTER;
@@ -983,6 +993,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
       valid_symbols[T_INCLUDE_MARKER]                ||
       valid_symbols[T_IMAGE_MARKER]                  ||
 
+      valid_symbols[T_IMAGE_INLINE_MARKER]           ||
       valid_symbols[T_TAG_MARKER]                    ||
       valid_symbols[T_TAG_END_MARKER]                ||
       valid_symbols[T_IFDEF_MARKER]                  ||
@@ -1083,6 +1094,14 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
       match_before(scanner, STR_IMAGE, strlen(STR_IMAGE), match_newline)
     ) {
       lexer->result_symbol = T_IMAGE_MARKER;
+      return true;
+    }
+    if (
+      !GET_BIT(IM_LITERALBLOCK) &&
+      !GET_BIT(IM_LISTINGBLOCK) &&
+      match_before(scanner, STR_IMAGE_INLINE, strlen(STR_IMAGE_INLINE), match_any)
+    ) {
+      lexer->result_symbol = T_IMAGE_INLINE_MARKER;
       return true;
     }
     if (match_before(scanner, STR_INCLUDE, strlen(STR_INCLUDE), match_newline)) {

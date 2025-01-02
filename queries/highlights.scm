@@ -391,11 +391,13 @@
 ] @string.escape
 
 [
-  (list_marker)
+  (list_asterisk_marker)
+  (list_hyphen_marker)
   (list_box)
   (block_continuation)
   (encoded_symbol)
-] @character
+  (description_list_marker)
+] @character @nospell
 
 [
   (block_example_separator1)
@@ -423,6 +425,11 @@
   (attr_value)
   (paragraph)
 ] @spell
+
+[
+ (image_marker)
+ (image_inline_marker)
+] @image
 
 [
   (ERROR)

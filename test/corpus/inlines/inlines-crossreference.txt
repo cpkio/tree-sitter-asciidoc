@@ -1,0 +1,27 @@
+====|||
+Cross-references
+====|||
+В своём стремлении повысить качество жизни, они забывают, что убеждённость
+некоторых оппонентов <<#e99e983e-3d26-442f-910e-d2b0a011df5d>> не оставляет
+шанса для благоприятных перспектив.
+
+С другой стороны, укрепление и развитие внутренней структуры однозначно
+определяет каждого участника <<#a6eb5a42-e58f-4ead-83c4-960aae768604,этого движения>>
+как способного принимать собственные решения касаемо поэтапного
+и последовательного развития общества.
+
+---|||
+(document
+  (paragraph
+    (cross_reference
+      (crossreference_marker_start)
+      (id)
+      (crossreference_marker_end)))
+  (emptyline)
+  (paragraph
+    (cross_reference
+      (crossreference_marker_start)
+      (id)
+      (crossreference_splitter)
+      (linktext)
+      (crossreference_marker_end))))

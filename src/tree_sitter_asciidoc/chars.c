@@ -162,12 +162,14 @@ static bool is_punctuation(int32_t c)
     ',',
     ':',
     ';',
-    '\'',
+    39, // '
     '"',
     '?',
     '!',
     '(',
     ')',
+    CHAR_LDQUO,
+    CHAR_RDQUO,
   };
   const int length = sizeof(valid_chars) / sizeof(int32_t);
   for (int i = 0; i < length; i++) {

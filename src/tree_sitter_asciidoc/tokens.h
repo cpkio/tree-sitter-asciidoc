@@ -3,6 +3,7 @@
 
 #define STR_INCLUDE "include::"
 #define STR_IMAGE "image::"
+#define STR_IMAGE_INLINE "image:"
 #define STR_IFDEF "ifdef::"
 #define STR_IFNDEF "ifndef::"
 #define STR_IFEVAL "ifeval::"
@@ -56,6 +57,14 @@
 #define STR_ADMONITION_CAUTION "CAUTION:"
 #define STR_ADMONITION_WARNING "WARNING:"
 
+#define STR_DESCRIPTION_LIST1 "::"
+#define STR_DESCRIPTION_LIST2 ":::"
+#define STR_DESCRIPTION_LIST3 "::::"
+#define STR_DESCRIPTION_LIST4 ";;"
+
+#define STR_CROSSREFERENCE_START "<<"
+#define STR_CROSSREFERENCE_END ">>"
+
 enum TokenType {
   T_TEXT,
   T_WHITESPACE,
@@ -90,6 +99,7 @@ enum TokenType {
 
   T_INCLUDE_MARKER,
   T_IMAGE_MARKER,
+  T_IMAGE_INLINE_MARKER,
   T_XREF_MARKER,
   T_FOOTNOTE_MARKER,
   T_ICON_MARKER,
