@@ -21,14 +21,19 @@ is not available yet. This is my first TS parser after all.
 I use Antora, so this parser supports Antora resource locator strings
 (`+include::v1@Component:module:page$index.adoc[]+`).
 
-== Installation (for now)
+== Installation
+
+Clone highlights repo to your plugin folder:
 
 ....
-tree-sitter generate
-gcc --std=c99 -o asciidoc.so -shared src/parser.c src/scanner.c -Os -Isrc/
+git clone https://github.com/cpkio/nvim-treesitter-asciidoc.git
 ....
 
-Copy the parser and queries to whatever.
+Install parser:
+
+....
+:TSInstall asciidoc
+....
 
 == Tests
 
