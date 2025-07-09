@@ -66,7 +66,7 @@ lists
   (block_title
     (block_title_marker))
   (list_decimal_
-    (list_marker)
+    (list_numbered_marker)
     (paragraph))
   (list_asterisk
     (list_asterisk_marker)
@@ -75,13 +75,13 @@ lists
     (list_asterisk_marker)
     (paragraph))
   (list_decimal_
-    (list_marker)
+    (list_numbered_marker)
     (paragraph))
   (list_decimal_
-    (list_marker)
+    (list_numbered_marker)
     (paragraph))
   (list_decimal_
-    (list_marker)
+    (list_numbered_marker)
     (paragraph))
   (list_asterisk
     (list_asterisk_marker)

@@ -7,7 +7,6 @@ attributes
 
 :valid-attribute: Rocket League is changing in a big way
 :!negated-attribute: Rocket League is changing in a big way
-:negated-attribute!: Rocket League is {attr-reference} in a big way
 
 
 ---|||
@@ -35,11 +34,5 @@ attributes
     (attr_name)
     (attribute_marker_end)
     (attr_value))
-  (attribute
-    (attribute_marker_start)
-    (attr_name)
-    (attribute_marker_end_neg)
-    (attr_value
-      (attribute_reference)))
   (emptyline))
 

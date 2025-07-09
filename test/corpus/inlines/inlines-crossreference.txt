@@ -1,14 +1,14 @@
 ====|||
-Cross-references
+inlines-crossreferences
 ====|||
-В своём стремлении повысить качество жизни, они забывают, что убеждённость
-некоторых оппонентов <<#e99e983e-3d26-442f-910e-d2b0a011df5d>> не оставляет
-шанса для благоприятных перспектив.
+The government’s Office of National Statistics released figures indicating
+that deaths could be at least 10 percent higher <<#e99e983e-3d26-442f-910e-d2b0a011df5d>> than the official toll is 12,107 as of Tuesday, which does not take into account many people.
 
-С другой стороны, укрепление и развитие внутренней структуры однозначно
-определяет каждого участника <<#a6eb5a42-e58f-4ead-83c4-960aae768604,этого движения>>
-как способного принимать собственные решения касаемо поэтапного
-и последовательного развития общества.
+The government’s Office of <<#a6eb5a42-e58f-4ead-83c4-960aae768604,National Statistics>> has
+released figures indicating that deaths could be at least 10
+percent higher than the official toll is 12,107 as of Tuesday,
+<<#acf8915f-8b31-47ca-9a86-8963227cf540>> which does not take into account
+many people.
 
 ---|||
 (document
@@ -22,6 +22,11 @@ Cross-references
     (cross_reference
       (crossreference_marker_start)
       (id)
-      (crossreference_splitter)
       (linktext)
-      (crossreference_marker_end))))
+      (crossreference_marker_end))
+    (cross_reference
+      (crossreference_marker_start)
+      (id)
+      (crossreference_marker_end))
+  )
+)

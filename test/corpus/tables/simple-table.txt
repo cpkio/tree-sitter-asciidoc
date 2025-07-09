@@ -1,5 +1,5 @@
 ====|||
-Simple table with include
+Simple table
 ====|||
 .Table
 [%header,cols="1,1,1"]
@@ -7,13 +7,9 @@ Simple table with include
 | H1
 | H2
 
-include::Component:module:page$index.adoc[]
+.2+h| cell
 
-|
-cell
-
-|
-cell 2
+| cell 2
 |===
 
 ---|||
@@ -39,17 +35,11 @@ cell 2
     (table_cell1
       (table_cell_marker1)
       (paragraph)
-      (emptyline)
-      (include_directive
-        (include_marker)
-        (antora_resource_component)
-        (antora_resource_module)
-        (antora_resource_family)
-        (file_path)
-        (inline_option_block_marker_start)
-        (inline_option_block_marker_end))
       (emptyline))
     (table_cell1
+      (table_row_span_factor)
+      (table_span_operator)
+      (table_cell_style)
       (table_cell_marker1)
       (paragraph)
       (emptyline))
@@ -57,4 +47,3 @@ cell 2
       (table_cell_marker1)
       (paragraph))
     (block_table_separator1)))
-

@@ -1,0 +1,37 @@
+====|||
+inlines-attributes
+====|||
+_{attribute}_
+
+*{attribute}*
+
+`{attribute}`
+
+^{attribute}^
+
+---|||
+(document
+  (paragraph
+    (emphasis
+      (emphasis_marker_start)
+      (attribute_reference)
+      (emphasis_marker_end)))
+  (emptyline)
+  (paragraph
+    (strong
+      (strong_marker_start)
+      (attribute_reference)
+      (strong_marker_end)))
+  (emptyline)
+  (paragraph
+    (monospace
+      (monospace_marker_start)
+      (attribute_reference)
+      (monospace_marker_end)))
+  (emptyline)
+  (paragraph
+    (superscript
+      (superscript_marker_start)
+      (attribute_reference)
+      (superscript_marker_end)))
+)

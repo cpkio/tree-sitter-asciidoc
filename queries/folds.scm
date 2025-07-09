@@ -8,5 +8,6 @@
   (block_sidebar)
   (block_pass)
   (block_quote)
-  (block_table)
+  (block_table1)
+  (block_table2)
 ] @fold

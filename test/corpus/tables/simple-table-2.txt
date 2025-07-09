@@ -1,16 +1,16 @@
 ====|||
-Simple table
+Simple table 2
 ====|||
 .Table
 [%header,cols="1,1,1"]
-|===
-| H1
-| H2
+!===
+! H1
+! H2
 
-| cell
+.2+h! cell
 
-| cell 2
-|===
+! cell 2
+!===
 
 ---|||
 (document
@@ -27,20 +27,23 @@ Simple table
         (table_cell_multiplication_factor))
       (cols))
     (block_option_marker_end))
-  (block_table
-    (block_table_separator1)
-    (table_cell
-      (table_cell_marker)
+  (block_table2
+    (block_table_separator2)
+    (table_cell2
+      (table_cell_marker2)
       (paragraph))
-    (table_cell
-      (table_cell_marker)
+    (table_cell2
+      (table_cell_marker2)
       (paragraph)
       (emptyline))
-    (table_cell
-      (table_cell_marker)
+    (table_cell2
+      (table_row_span_factor)
+      (table_span_operator)
+      (table_cell_style)
+      (table_cell_marker2)
       (paragraph)
       (emptyline))
-    (table_cell
-      (table_cell_marker)
+    (table_cell2
+      (table_cell_marker2)
       (paragraph))
-    (block_table_separator1)))
+    (block_table_separator2)))

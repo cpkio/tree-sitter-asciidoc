@@ -8,8 +8,12 @@ module.exports = grammar({
         $._newline,
         $.monospace_marker_start,
         $.monospace_marker_end,
+        $.monospace_unconstrained_marker_start,
+        $.monospace_unconstrained_marker_end,
         $.inline_passthrough_marker_start,
         $.inline_passthrough_marker_end,
+        $.inline_passthrough_unconstrained_marker_start,
+        $.inline_passthrough_unconstrained_marker_end,
         $.hardbreak,
         $.block_continuation,
         $.title_marker0,
@@ -25,14 +29,25 @@ module.exports = grammar({
         $.comment_marker,
         $.emphasis_marker_start,
         $.emphasis_marker_end,
+        $.emphasis_unconstrained_marker_start,
+        $.emphasis_unconstrained_marker_end,
         $.strong_marker_start,
         $.strong_marker_end,
+        $.strong_unconstrained_marker_start,
+        $.strong_unconstrained_marker_end,
         $.superscript_marker_start,
         $.superscript_marker_end,
+        $.superscript_unconstrained_marker_start,
+        $.superscript_unconstrained_marker_end,
         $.subscript_marker_start,
         $.subscript_marker_end,
+        $.subscript_unconstrained_marker_start,
+        $.subscript_unconstrained_marker_end,
         $.highlight_marker_start,
         $.highlight_marker_end,
+        $.highlight_unconstrained_marker_start,
+        $.highlight_unconstrained_marker_end,
+
         $.include_marker,
         $.image_marker,
         $.image_inline_marker,
@@ -42,14 +57,31 @@ module.exports = grammar({
         $.http_marker,
         $.link_marker,
         $.mailto_marker,
+
         $.callout_marker_from,
         $.callout_marker_to,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         $.inline_option_block_marker_start,
         $.inline_option_block_marker_end,
         $.crossreference_marker_start,
         $.crossreference_marker_end,
-        $.crossreference_splitter,
-        $.block_comment,
+        $._block_comment_marker,
         $.block_example_separator1,
         $.block_example_separator2,
         $.block_example_separator3,
@@ -61,38 +93,57 @@ module.exports = grammar({
         $.block_quote_separator,
         $.block_table_separator1,
         $.block_table_separator2,
-        $.table_cell_marker,
+
+        $.table_cell_marker1,
+        $.table_cell_marker2,
+
         $.block_option_marker_start,
         $.block_option_marker_end,
+
         $.page_break,
         $.thematic_break,
+
         $.block_title_marker,
         $.emptyline,
         $.list_asterisk_marker,
+
+
+
+
+
         $.list_hyphen_marker,
+
+        $.list_numbered_marker,
+
+
+
+
+
         $._admonition_note_marker,
         $._admonition_tip_marker,
         $._admonition_important_marker,
         $._admonition_caution_marker,
         $._admonition_warning_marker,
-        $.list_decimal__marker,
+
         $._attribute_reference_start_marker,
         $._attribute_reference_end_marker,
         $.tag_marker,
         $.tag_end_marker,
         $.ifdef_marker, // + ifndef
+
         $.ifeval_marker,
         $.endif_marker,
+
         $.pass_marker,
         $.stem_marker,
         $.latexmath_marker,
-        $.pass_splitter,
+
+        $.description_list_marker,
+        $.escape,
     ],
     extras: $ => [],
     conflicts: $ => [],
     precedences: $ => [],
-
-    word: $ => $.kwd,
 
     rules: {
         document: $ => repeat(
@@ -116,7 +167,8 @@ module.exports = grammar({
                 $.block_sidebar,
                 $.block_pass,
                 $.block_quote,
-                $.block_table,
+                $.block_table1,
+                $.block_table2,
                 $.option_block,
                 $.list_asterisk,
                 $.list_checkbox,
@@ -137,7 +189,7 @@ module.exports = grammar({
 
         _not_newline: $ => /[^\r\n]+/,
 
-        _identifier: $ => prec.left(0, /[A-Za-z][-_\w]*/),
+        _identifier: $ => prec.right(0, /[A-Za-z][-_0-9A-Za-z]*/),
 
         paragraph: $ => prec.right(0, repeat1(
                           choice(
@@ -158,25 +210,26 @@ module.exports = grammar({
                         ]),
                         $._whitespace,
                         $.xref_directive,
-                        $.xref_directive_id,
                         $.icon_macro,
                         $.footnote_macro,
-                        // $.anchor_macro,
                         $.attribute_reference,
                         $.emphasis,
+                        $.emphasis_u,
                         $.strong,
+                        $.strong_u,
                         $.monospace,
+                        $.monospace_u,
                         $.highlight,
+                        $.highlight_u,
                         $.superscript,
+                        $.superscript_u,
                         $.subscript,
+                        $.subscript_u,
                         $.inline_passthrough,
+                        $.inline_passthrough_u,
                         $.replacement,
                         $.escape,
                         $.encoded_symbol,
-                        // $.http,
-                        // $.http_macro,
-                        // $.email,
-                        // $.mailto_macro,
                         $.link_macro,
                         $.cross_reference,
                         $.pass_macro,
@@ -247,14 +300,14 @@ module.exports = grammar({
                 choice($.attribute_marker_start, $.attribute_marker_start_neg),
                 $.attr_name,
                 $.attribute_marker_end,
-                optional(seq($._whitespace, $.attr_value,)),
+                optional($.attr_value),
                 $._newline
             ),
             seq(
                 $.attribute_marker_start,
                 $.attr_name,
                 choice($.attribute_marker_end, $.attribute_marker_end_neg),
-                optional(seq($._whitespace, $.attr_value,)),
+                optional($.attr_value),
                 $._newline
             ),
         ),
@@ -346,7 +399,8 @@ module.exports = grammar({
                                 $.block_pass,
                                 $.block_quote,
                                 $.block_sidebar,
-                                $.block_table,
+                                $.block_table1,
+                                $.block_table2,
                                 $.block_title,
                                 $.callout,
                                 $.description_list,
@@ -378,7 +432,8 @@ module.exports = grammar({
                                 $.block_pass,
                                 $.block_quote,
                                 $.block_sidebar,
-                                $.block_table,
+                                $.block_table1,
+                                $.block_table2,
                                 $.block_title,
                                 $.callout,
                                 $.description_list,
@@ -410,7 +465,8 @@ module.exports = grammar({
                                 $.block_pass,
                                 $.block_quote,
                                 $.block_sidebar,
-                                $.block_table,
+                                $.block_table1,
+                                $.block_table2,
                                 $.block_title,
                                 $.callout,
                                 $.description_list,
@@ -464,7 +520,8 @@ module.exports = grammar({
                                 $.block_pass,
                                 $.block_quote,
                                 $.block_sidebar,
-                                $.block_table,
+                                $.block_table1,
+                                $.block_table2,
                                 $.block_title,
                                 $.callout,
                                 $.description_list,
@@ -495,7 +552,8 @@ module.exports = grammar({
                                 $.block_literal,
                                 $.block_pass,
                                 $.block_quote,
-                                $.block_table,
+                                $.block_table1,
+                                $.block_table2,
                                 $.block_title,
                                 $.callout,
                                 $.description_list,
@@ -526,7 +584,8 @@ module.exports = grammar({
                                 $.block_literal,
                                 $.block_sidebar,
                                 $.block_quote,
-                                $.block_table,
+                                $.block_table1,
+                                $.block_table2,
                                 $.block_title,
                                 $.callout,
                                 $.description_list,
@@ -557,7 +616,8 @@ module.exports = grammar({
                                 $.block_literal,
                                 $.block_pass,
                                 $.block_sidebar,
-                                $.block_table,
+                                $.block_table1,
+                                $.block_table2,
                                 $.block_title,
                                 $.callout,
                                 $.description_list,
@@ -572,26 +632,43 @@ module.exports = grammar({
                             )),
                             $.block_quote_separator,
                           ),
-        block_table: $ => seq(
+        block_table1: $ => seq(
                             $.block_table_separator1,
                             repeat(choice(
-                              $.table_cell,
-                              // $.emptyline,
+                              $.table_cell1,
                               $._newline,
                               $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
                             )),
                             $.block_table_separator1,
                           ),
+        block_table2: $ => seq(
+                            $.block_table_separator2,
+                            repeat(choice(
+                              $.table_cell2,
+                              $._newline,
+                              $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
+                            )),
+                            $.block_table_separator2,
+                          ),
+
+        block_comment: $ => seq(
+                            $._block_comment_marker,
+                            repeat(choice(
+                                $._text,
+                                $._newline,
+                            )),
+                            $._block_comment_marker,
+        ),
 
         table_horizontal_alignment_operator: $ => choice('<', '>', '^'),
         table_vertical_alignment_operator: $ => choice('.<', '.>', '.^'),
-        table_cell_styles: $ => choice('a', 'd', 'e', 'h', 'l', 'm', 's'),
+        table_cell_style: $ => choice('a', 'd', 'e', 'h', 'l', 'm', 's'),
         table_column_span_factor: $ => /\d+/,
         table_row_span_factor: $ => /\.\d+/,
         table_span_operator: $ => '+',
         table_cell_multiplication_factor: $ => /\d+/,
         table_cell_multiplication_operator: $ => '*',
-        table_cell: $ => prec.right(seq(
+        table_cell1: $ => prec.right(seq(
             optional(
                 seq(
                     optional(choice(
@@ -610,17 +687,67 @@ module.exports = grammar({
                                 $.table_span_operator,
                             )
                         ),
-                        seq(
-                            $.table_cell_multiplication_factor,
-                            $.table_cell_multiplication_operator,
+                    )),
+                    optional($.table_horizontal_alignment_operator),
+                    optional($.table_vertical_alignment_operator),
+                    optional($.table_cell_style)
+                )
+            ),
+            $.table_cell_marker1,
+            repeat(choice(
+                $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
+                $.image_directive,
+                $._newline,
+                $.admonition,
+                $.block_continuation,
+                $.block_example1,
+                $.block_example2,
+                $.block_example3,
+                $.block_listing,
+                $.block_literal,
+                $.block_open,
+                $.block_pass,
+                $.block_quote,
+                $.block_sidebar,
+                $.block_table2,
+                $.block_title,
+                $.description_list,
+                $.emptyline,
+                $.list_asterisk,
+                $.list_checkbox,
+                $.list_decimal,
+                $.list_decimal_,
+                $.list_hyphen,
+                $.option_block,
+                $.paragraph,
+            ))
+        )),
+        table_cell2: $ => prec.right(seq(
+            optional(
+                seq(
+                    optional(choice(
+                        choice(
+                            seq(
+                                $.table_column_span_factor,
+                                $.table_row_span_factor,
+                                $.table_span_operator,
+                            ),
+                            seq(
+                                $.table_column_span_factor,
+                                $.table_span_operator,
+                            ),
+                            seq(
+                                $.table_row_span_factor,
+                                $.table_span_operator,
+                            )
                         ),
                     )),
                     optional($.table_horizontal_alignment_operator),
                     optional($.table_vertical_alignment_operator),
-                    optional($.table_cell_styles)
+                    optional($.table_cell_style)
                 )
             ),
-            $.table_cell_marker,
+            $.table_cell_marker2,
             repeat(choice(
                 $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
                 $.image_directive,
@@ -655,7 +782,7 @@ module.exports = grammar({
             repeat(
                 seq(
                     ',',
-                    optional($._whitespace),
+                    optional(/\s+/),
                     $._options_block_choice,
                 )
             ),
@@ -678,10 +805,10 @@ module.exports = grammar({
             alias(/lines="\d+\.\.\d+"/, $.highlight_lines),
             alias(seq('caption="', $._caption_content, '"'), $.caption),
             alias(seq('reftext="', $._caption_content, '"'), $.reftext),
-            alias($._admonition_labels, $.admonition),
+            $._admonition_labels,
             alias($._block_types, $.block_type),
             alias($._section_styles, $.section_style),
-            $.option_table,
+            $._option_table,
             $.option_subs,
             $.option_desclist
         ),
@@ -725,7 +852,7 @@ module.exports = grammar({
                 repeat(
                     seq(
                         ',',
-                        optional($._whitespace),
+                        optional(/\s+/),
                         $._identifier,
                     )
                 ),
@@ -749,51 +876,60 @@ module.exports = grammar({
                 $.table_horizontal_alignment_operator,
                 optional($.table_vertical_alignment_operator),
                 optional($.table_cell_multiplication_factor),
-                optional($.table_cell_styles)
+                optional($.table_cell_style)
             ),
             seq(
                 optional($.table_horizontal_alignment_operator),
                 $.table_vertical_alignment_operator,
                 optional($.table_cell_multiplication_factor),
-                optional($.table_cell_styles)
+                optional($.table_cell_style)
             ),
             seq(
                 optional($.table_horizontal_alignment_operator),
                 optional($.table_vertical_alignment_operator),
                 $.table_cell_multiplication_factor,
-                optional($.table_cell_styles)
+                optional($.table_cell_style)
             ),
             seq(
                 optional($.table_horizontal_alignment_operator),
                 optional($.table_vertical_alignment_operator),
                 optional($.table_cell_multiplication_factor),
-                $.table_cell_styles
+                $.table_cell_style
             ),
         )),
-        _cols_values: $ => seq(
-            $._cols_option_column,
-            repeat(
-                seq(
-                    choice(',', ';'),
-                    optional($._whitespace),
-                    $._cols_option_column,
+        _cols_option_column_mult: $ => prec.left(seq(
+                $.table_cell_multiplication_factor,
+                $.table_cell_multiplication_operator,
+                optional($.table_horizontal_alignment_operator),
+                optional($.table_vertical_alignment_operator),
+        )),
+        _cols_values: $ => choice(
+            seq(
+                $._cols_option_column,
+                repeat(
+                    seq(
+                        choice(',', ';'),
+                        optional(/\s+/),
+                        $._cols_option_column,
+                    )
                 )
-            )
+            ),
+            $._cols_option_column_mult,
         ),
-        option_table: $ => choice(
-            alias(seq('cols="', $._cols_values, '"'), $.cols),
-            alias(seq('format="', $._format_choice, '"'), $.format),
-            alias(seq('format=', $._format_choice), $.format),
-            alias(seq('separator=', $._separator_symbol), $.separator),
-            alias(seq('frame="', $._frame_choice, '"'), $.frame),
-            alias(seq('frame=', $._frame_choice), $.frame),
-            alias(seq('grid="', $._grid_choice, '"'), $.grid),
-            alias(seq('grid=', $._grid_choice), $.grid),
-            alias(seq('stripes="', $._stripes_choice, '"'), $.stripes),
-            alias(seq('stripes=', $._stripes_choice), $.stripes),
-            alias(seq('float="', $._float_choice , '"'), $.float),
-            alias(seq('float=', $._float_choice), $.float),
-            alias(seq('width=', $._width_value), $.width)
+        _option_table: $ => choice(
+            seq('cols="', alias($._cols_values, $.cols), '"'),
+            seq('format="', alias($._format_choice, $.format), '"'),
+            seq('format=', alias($._format_choice, $.format)),
+            seq('separator=', alias($._separator_symbol, $.separator)),
+            seq('frame="', alias($._frame_choice, $.frame), '"'),
+            seq('frame=', alias($._frame_choice, $.frame)),
+            seq('grid="', alias($._grid_choice, $.grid), '"'),
+            seq('grid=', alias($._grid_choice, $.grid)),
+            seq('stripes="', alias($._stripes_choice, $.stripes), '"'),
+            seq('stripes=', alias($._stripes_choice, $.stripes)),
+            seq('float="', alias($._float_choice , $.float), '"'),
+            seq('float=', alias($._float_choice, $.float)),
+            seq('width=', alias($._width_value, $.width))
         ),
 
         _subs_choice: $ => choice(/[+-]?none/, /[+-]?normal/, /[+-]?verbatim/, /[+-]?specialchars/, /[+-]?callouts/, /[+-]?quotes/, /[+-]?attributes/, /[+-]?replacements/, /[+-]?macros/, /[+-]?post_replacements/),
@@ -802,7 +938,7 @@ module.exports = grammar({
             repeat(
                 seq(
                     ',',
-                    optional($._whitespace),
+                    optional(/\s+/),
                     $._subs_choice,
                 )
             )
@@ -921,26 +1057,12 @@ module.exports = grammar({
               seq(
                   $.xref_marker,
                   $._antora_resource,
+                  optional(alias(/#[A-Za-z][-_A-Za-z0-9]*/, $.id)),
                   $.inline_option_block_marker_start,
                   alias(repeat(choice(
                     $._txt,
                     $._whitespace,
-                    $.attribute_reference,
-                  )), $.linktext),
-                  $.inline_option_block_marker_end
-              ),
-            ),
-
-        xref_directive_id: $ =>
-            prec.left(110,
-              seq(
-                  $.xref_marker,
-                  $._antora_resource,
-                  alias(/#[A-Za-z][-\w]*/, $.id),
-                  $.inline_option_block_marker_start,
-                  alias(repeat1(choice(
-                    $._txt,
-                    $._whitespace,
+                    $._newline,
                     $.attribute_reference,
                   )), $.linktext),
                   $.inline_option_block_marker_end
@@ -968,9 +1090,9 @@ module.exports = grammar({
                   $.include_marker,
                   $._antora_resource,
                   $.inline_option_block_marker_start,
-                  optional($._whitespace),
+                  optional(/\s+/),
                   optional($._include_params),
-                  optional($._whitespace),
+                  optional(/\s+/),
                   $.inline_option_block_marker_end,
               )),
 
@@ -980,31 +1102,35 @@ module.exports = grammar({
                     repeat(
                         seq(
                             ',',
-                            optional($._whitespace),
+                            optional(/\s+/),
                             $._includes_choice,
                         )
                     )
                 )),
 
+        _include_tag: $ => seq(
+            optional('!'),
+            choice($._identifier,'*','**')
+        ),
+
         _includes_choice: $ => choice(
-            alias(seq('tag=', alias($._identifier, $.include_tag)), $.tags),
-            alias(seq('tag="', alias($._identifier, $.include_tag), '"'), $.tags),
+            alias(seq('tag=', alias($._include_tag, $.include_tag)), $.tags),
+            alias(seq('tag="', alias($._include_tag, $.include_tag), '"'), $.tags),
             alias(seq(
                 'tags="',
-                alias($._identifier, $.include_tag),
+                alias($._include_tag, $.include_tag),
                 repeat(
                     seq(
                         ';',
-                        optional($._whitespace),
-                        alias($._identifier, $.include_tag),
+                        optional(/\s+/),
+                        alias($._include_tag, $.include_tag),
                     )
                 ),
                 '"'
             ), $.tags),
-            alias(/leveloffset=\+?\d+/, $.leveloffset),
+            alias(/leveloffset=(\+|-)?\d+/, $.leveloffset),
             alias(/lines="\d+\.\.\d+"/, $.lines),
             alias(/indent=\d+/, $.indent),
-            alias(/encoding=\w+/, $.encoding),
             alias(/encoding=\w+/, $.encoding),
             alias(/opts=optional/, $.optional),
             alias(/opts="optional"/, $.optional),
@@ -1024,7 +1150,7 @@ module.exports = grammar({
                             repeat(
                                 seq(
                                     ';',
-                                    optional($._whitespace),
+                                    optional(/\s+/),
                                     alias($._identifier, $.parameter_value),
                                 )
                             ),
@@ -1115,6 +1241,13 @@ module.exports = grammar({
             $.inline_passthrough,
             $.attribute_reference,
             $.replacement,
+            $.xref_directive,
+            $.strong_u,
+            $.monospace_u,
+            $.highlight_u,
+            $.superscript_u,
+            $.subscript_u,
+            $.inline_passthrough_u,
         )),
 
         emphasis: $ => prec.left(10,
@@ -1132,6 +1265,21 @@ module.exports = grammar({
                 $.emphasis_marker_end)
         ),
 
+        emphasis_u: $ => prec.left(10,
+            seq(
+                $.emphasis_unconstrained_marker_start,
+                seq(
+                    $._in_emphasis,
+                    repeat(
+                        seq(
+                            $._newline,
+                            $._in_emphasis
+                        )
+                    )
+                ),
+                $.emphasis_unconstrained_marker_end)
+        ),
+
         _in_strong: $ => repeat1(choice(
             $._txt,
             $._whitespace,
@@ -1144,6 +1292,13 @@ module.exports = grammar({
             $.inline_passthrough,
             $.attribute_reference,
             $.replacement,
+            $.xref_directive,
+            $.emphasis_u,
+            $.monospace_u,
+            $.highlight_u,
+            $.superscript_u,
+            $.subscript_u,
+            $.inline_passthrough_u,
         )),
 
         strong: $ => prec.left(10,
@@ -1161,18 +1316,30 @@ module.exports = grammar({
                 $.strong_marker_end)
         ),
 
+        strong_u: $ => prec.left(10,
+            seq(
+                $.strong_unconstrained_marker_start,
+                seq(
+                    $._in_strong,
+                    repeat(
+                        seq(
+                            $._newline,
+                            $._in_strong
+                        )
+                    )
+                ),
+                $.strong_unconstrained_marker_end)
+        ),
+
         _in_monospace: $ => repeat1(choice(
             $._txt,
             $._whitespace,
             common.punctuation_without($, []),
-            $.strong,
-            $.emphasis,
-            $.highlight,
-            $.superscript,
-            $.subscript,
             $.inline_passthrough,
             $.attribute_reference,
             $.replacement,
+            $.xref_directive,
+            $.inline_passthrough_u,
         )),
 
         monospace: $ => prec.left(10,
@@ -1190,6 +1357,21 @@ module.exports = grammar({
                 $.monospace_marker_end)
         ),
 
+        monospace_u: $ => prec.left(10,
+            seq(
+                $.monospace_unconstrained_marker_start,
+                seq(
+                    $._in_monospace,
+                    repeat(
+                        seq(
+                            $._newline,
+                            $._in_monospace
+                        )
+                    )
+                ),
+                $.monospace_unconstrained_marker_end)
+        ),
+
         _in_highlight: $ => repeat1(choice(
             $._txt,
             $._whitespace,
@@ -1202,6 +1384,13 @@ module.exports = grammar({
             $.inline_passthrough,
             $.attribute_reference,
             $.replacement,
+            $.xref_directive,
+            $.strong_u,
+            $.emphasis_u,
+            $.monospace_u,
+            $.superscript_u,
+            $.subscript_u,
+            $.inline_passthrough_u,
         )),
 
         highlight: $ => prec.left(10,
@@ -1219,6 +1408,21 @@ module.exports = grammar({
                 $.highlight_marker_end)
         ),
 
+        highlight_u: $ => prec.left(10,
+            seq(
+                $.highlight_unconstrained_marker_start,
+                seq(
+                    $._in_highlight,
+                    repeat(
+                        seq(
+                            $._newline,
+                            $._in_highlight
+                        )
+                    )
+                ),
+                $.highlight_unconstrained_marker_end)
+        ),
+
         _in_superscript: $ => repeat1(choice(
             $._txt,
             $._whitespace,
@@ -1231,6 +1435,13 @@ module.exports = grammar({
             $.inline_passthrough,
             $.attribute_reference,
             $.replacement,
+            $.xref_directive,
+            $.strong_u,
+            $.emphasis_u,
+            $.monospace_u,
+            $.highlight_u,
+            $.subscript_u,
+            $.inline_passthrough_u,
         )),
 
         superscript: $ => prec.left(10,
@@ -1248,6 +1459,21 @@ module.exports = grammar({
                 $.superscript_marker_end)
         ),
 
+        superscript_u: $ => prec.left(10,
+            seq(
+                $.superscript_unconstrained_marker_start,
+                seq(
+                    $._in_superscript,
+                    repeat(
+                        seq(
+                            $._newline,
+                            $._in_superscript
+                        )
+                    )
+                ),
+                $.superscript_unconstrained_marker_end)
+        ),
+
         _in_subscript: $ => repeat1(choice(
             $._txt,
             $._whitespace,
@@ -1260,6 +1486,13 @@ module.exports = grammar({
             $.inline_passthrough,
             $.attribute_reference,
             $.replacement,
+            $.xref_directive,
+            $.strong_u,
+            $.emphasis_u,
+            $.monospace_u,
+            $.highlight_u,
+            $.superscript_u,
+            $.inline_passthrough_u,
         )),
 
         subscript: $ => prec.left(10,
@@ -1277,6 +1510,21 @@ module.exports = grammar({
                 $.subscript_marker_end)
         ),
 
+        subscript_u: $ => prec.left(10,
+            seq(
+                $.subscript_unconstrained_marker_start,
+                seq(
+                    $._in_subscript,
+                    repeat(
+                        seq(
+                            $._newline,
+                            $._in_subscript
+                        )
+                    )
+                ),
+                $.subscript_unconstrained_marker_end)
+        ),
+
         inline_passthrough: $ => prec.left(10,
             seq(
                 $.inline_passthrough_marker_start,
@@ -1286,14 +1534,21 @@ module.exports = grammar({
                 $.inline_passthrough_marker_end)
         ),
 
-        escape: $ => /\\\S/,
+        inline_passthrough_u: $ => prec.left(10,
+            seq(
+                $.inline_passthrough_unconstrained_marker_start,
+                  repeat1(
+                      /[^+]+/,
+                  ),
+                $.inline_passthrough_unconstrained_marker_end)
+        ),
 
-        list_asterisk: $ => seq(alias(/\*+\u0020+/, $.list_asterisk_marker), $.paragraph),
-        list_hyphen: $ => seq(alias(/-\u0020+/, $.list_hyphen_marker), $.paragraph),
+        list_asterisk: $ => seq($.list_asterisk_marker, $.paragraph),
+        list_hyphen: $ => seq($.list_hyphen_marker, $.paragraph),
 
         list_checkbox: $ => seq(alias(/\u0020*\*{1,6}\u0020\[[*x]?\]\u0020+/, $.list_box), $.paragraph),
         list_decimal: $ => seq(alias(/\u0020*\d+\.\u0020+/, $.list_marker), $.paragraph),
-        list_decimal_: $ => seq(alias(/\.+\u0020+/, $.list_marker), $.paragraph),
+        list_decimal_: $ => seq($.list_numbered_marker, $.paragraph),
 
         _description_list_marker: $ => choice('::', ':::', '::::', ';;'),
 
@@ -1314,18 +1569,7 @@ module.exports = grammar({
 
         http: $ => /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
 
-        // http_macro: $ => prec.left(10, seq($.http, '[', alias(optional($._text), $.linktext), ']')),
-
         email: $ => /[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+/,
-
-        // mailto_macro: $ => prec.left(10, seq(
-        //     'mailto:',
-        //     $.email,
-        //     '[',
-        //     alias(optional($._text), $.linktext),
-        //     ']'
-        //
-        // )),
 
         _link_macro_params: $ => choice(
             alias($._option_role_named, $.role),
@@ -1371,7 +1615,7 @@ module.exports = grammar({
             alias($._identifier, $.id),
             optional(
                 seq(
-                    $.crossreference_splitter,
+                    ',',
                     alias(repeat1(choice($._txt, $._whitespace)), $.linktext),
                 )
             ),
@@ -1388,11 +1632,6 @@ module.exports = grammar({
                 )),
             )),
             '[',
-            // repeat(choice(
-            //     $._txt,
-            //     $._whitespace,
-            //     common.punctuation_without($, [ '[', ']' ])
-            // )),
             ']',
         ),
 
@@ -1417,12 +1656,18 @@ module.exports = grammar({
             'verse'
         ),
         _admonition_labels: $ => choice(
-            'NOTE',
-            'TIP',
-            'IMPORTANT',
-            'CAUTION',
-            'WARNING'
+            $.admonition_option_note,
+            $.admonition_option_tip,
+            $.admonition_option_important,
+            $.admonition_option_caution,
+            $.admonition_option_warning,
         ),
+        admonition_option_note: $ => 'NOTE',
+        admonition_option_tip: $ => 'TIP',
+        admonition_option_important: $ => 'IMPORTANT',
+        admonition_option_caution: $ => 'CAUTION',
+        admonition_option_warning: $ => 'WARNING',
+
         _section_styles: $ => choice(
             'abstract',
             'acknowledgments',
@@ -1475,6 +1720,5 @@ module.exports = grammar({
         ),
         encoded_symbol: $ => /&#\d+;/,
 
-        kwd: $ => /[A-Za-z]+:+/
     },
 })

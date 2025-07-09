@@ -1,94 +1,152 @@
+// vim:tw=0:ts=2:sw=2:virtualedit=all
 #include "chars.h"
-#include <string.h>
 
 static bool is_newline(int32_t c)
 {
-  const int32_t newline_chars[] = {
-    CHAR_EOF,
-    CHAR_NEWLINE,
-    CHAR_CARRIAGE_RETURN,
-  };
-  const int length = sizeof(newline_chars) / sizeof(int32_t);
-  for (int i = 0; i < length; i++) {
-    if (c == newline_chars[i]) {
-      return true;
+    const int32_t newline_chars[] = {
+        CHAR_EOF,
+        CHAR_NEWLINE,
+        CHAR_CARRIAGE_RETURN,
+    };
+    const int length = sizeof(newline_chars) / sizeof(int32_t);
+    for (int i = 0; i < length; i++) {
+        if (c == newline_chars[i]) {
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 static bool is_space(int32_t c)
 {
-  const int32_t space_chars[] = {
-    CHAR_SPACE,
-    CHAR_FORM_FEED,
-    CHAR_TAB,
-    CHAR_VERTICAL_TAB,
-    CHAR_NBSP,
-  };
-  const int length = sizeof(space_chars) / sizeof(int32_t);
-  bool is_space_char = false;
-  for (int i = 0; i < length; i++) {
-    if (c == space_chars[i]) {
-      is_space_char = true;
-      break;
+    const int32_t space_chars[] = {
+        CHAR_SPACE,
+        // CHAR_FORM_FEED,
+        CHAR_TAB,
+        // CHAR_VERTICAL_TAB,
+        // CHAR_NBSP,
+
+        // CHAR_EN_QUAD,
+        // CHAR_EM_QUAD,
+        // CHAR_EN_SPACE,
+        // CHAR_EM_SPACE,
+        // CHAR_THREE_PER_EM_SPACE,
+        // CHAR_FOUR_PER_EM_SPACE,
+        // CHAR_SIX_PER_EM_SPACE,
+        // CHAR_FIGURE_SPACE,
+        // CHAR_PUNCTUATION_SPACE,
+        // CHAR_THIN_SPACE,
+        // CHAR_HAIR_SPACE,
+    };
+    const int length = sizeof(space_chars) / sizeof(int32_t);
+    bool is_space_char = false;
+    for (int i = 0; i < length; i++) {
+        if (c == space_chars[i]) {
+            is_space_char = true;
+            break;
+        }
     }
-  }
-  return is_space_char;
+    return is_space_char;
+}
+
+static bool is_space_extended(int32_t c)
+{
+    const int32_t space_chars[] = {
+        CHAR_SPACE,
+        CHAR_FORM_FEED,
+        CHAR_TAB,
+        CHAR_VERTICAL_TAB,
+        CHAR_NBSP,
+
+        CHAR_EN_QUAD,
+        CHAR_EM_QUAD,
+        CHAR_EN_SPACE,
+        CHAR_EM_SPACE,
+        CHAR_THREE_PER_EM_SPACE,
+        CHAR_FOUR_PER_EM_SPACE,
+        CHAR_SIX_PER_EM_SPACE,
+        CHAR_FIGURE_SPACE,
+        CHAR_PUNCTUATION_SPACE,
+        CHAR_THIN_SPACE,
+        CHAR_HAIR_SPACE,
+    };
+    const int length = sizeof(space_chars) / sizeof(int32_t);
+    bool is_space_char = false;
+    for (int i = 0; i < length; i++) {
+        if (c == space_chars[i]) {
+            is_space_char = true;
+            break;
+        }
+    }
+    return is_space_char;
+}
+
+static bool is_space_consume(ADOCScanner* scanner)
+{
+    while (is_space(scanner->lookahead)) {
+        scanner->skip(scanner);
+    }
 }
 
 static bool is_newline_or_space(int32_t c)
 {
-  return is_newline(c) || is_space(c);
+    return is_newline(c) || is_space(c);
+}
+static bool is_newline_or_space_extended(int32_t c)
+{
+    return is_newline(c) || is_space_extended(c);
 }
 
-static bool is_anything(int32_t c) { return true; }
+static bool is_anything(int32_t c)
+{
+    return true;
+}
 
 static bool is_number(int32_t c)
 {
-  const int32_t upper = 48;
-  const int32_t lower = 57;
-  return c >= upper && c <= lower;
+    const int32_t upper = 48;
+    const int32_t lower = 57;
+    return c >= upper && c <= lower;
 }
 
 static bool is_abc_lower(int32_t c)
 {
-  const int32_t upper = 97;
-  const int32_t lower = 122;
-  return c >= upper && c <= lower;
+    const int32_t upper = 97;
+    const int32_t lower = 122;
+    return c >= upper && c <= lower;
 }
 
 static bool is_abc_upper(int32_t c)
 {
-  const int32_t upper = 65;
-  const int32_t lower = 90;
-  return c >= upper && c <= lower;
+    const int32_t upper = 65;
+    const int32_t lower = 90;
+    return c >= upper && c <= lower;
 }
 
 static bool is_abc(int32_t c)
 {
-  return is_abc_lower(c) || is_abc_upper(c);
+    return is_abc_lower(c) || is_abc_upper(c);
 }
 
 static bool is_alphanumeric(int32_t c)
 {
-  return is_abc(c) || is_number(c);
+    return is_abc(c) || is_number(c);
 }
 
 static bool is_alphanumeric_dash_underscore(int32_t c)
 {
-  return is_abc(c) || is_number(c) || c == 45 || c == 95;
+    return is_abc(c) || is_number(c) || c == 45 || c == 95;
 }
 
 static bool is_word(int32_t c)
 {
-  return
-    !(c >= 33 && c <= 47) &&
-    !(c >= 58 && c <= 64) &&
-    !(c >= 91 && c <= 96) &&
-    !(c >= 123 && c <= 126) &&
-    !is_space(c) &&
-    !is_newline(c);
+    return
+        !(c >= 33 && c <= 47) &&
+        !(c >= 58 && c <= 64) &&
+        !(c >= 91 && c <= 96) &&
+        !(c >= 123 && c <= 126) &&
+        !is_space(c) &&
+        !is_newline(c);
 }
 
 /*
@@ -105,77 +163,91 @@ static bool is_word(int32_t c)
 // uses a single opening mark and a single closing mark to enclose the text to
 // be styled (e.g., *strong*).
 
+// Символы, которые могут следовать за пробелами и пунктуацией
 static bool is_inline_markup_start_char(int32_t c)
 {
-  const int32_t valid_chars[] = {
-    CHAR_HIGHLIGHT,             //
-    CHAR_OPTION_START,          //
-    CHAR_STRONG,                //
-    CHAR_EMPHASIS,              //
-    CHAR_MONOSPACE,             //
-    CHAR_SUPERSCRIPT,           //
-    CHAR_SUBSCRIPT,             //
-    CHAR_INLINE_PASSTHROUGH,    //
-    CHAR_CROSSREFERENCE_START,  //
-    CHAR_ATTRIBUTE_REFERENCE_START,
-    CHAR_ATTRIBUTE,
-    CHAR_ESCAPE,
-  };
-  const int length = sizeof(valid_chars) / sizeof(int32_t);
-  for (int i = 0; i < length; i++) {
-    if (c == valid_chars[i]) {
-      return true;
+    const int32_t valid_chars[] = {
+        CHAR_HIGHLIGHT,
+        CHAR_OPTION_START,
+        CHAR_STRONG,
+        CHAR_EMPHASIS,
+        CHAR_MONOSPACE,
+        CHAR_SUPERSCRIPT,
+        CHAR_SUBSCRIPT,
+        CHAR_INLINE_PASSTHROUGH,
+        CHAR_CROSSREFERENCE_START,
+        CHAR_ATTRIBUTE_REFERENCE_START,
+        CHAR_ATTRIBUTE,
+        CHAR_ESCAPE,
+    };
+    const int length = sizeof(valid_chars) / sizeof(int32_t);
+    for (int i = 0; i < length; i++) {
+        if (c == valid_chars[i]) {
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 static bool is_inline_markup_end_char(int32_t c)
 {
-  const int32_t valid_chars[] = {
-    CHAR_HIGHLIGHT,             //
-    CHAR_OPTION_END,            //
-    CHAR_STRONG,                //
-    CHAR_EMPHASIS,              //
-    CHAR_MONOSPACE,             //
-    CHAR_SUPERSCRIPT,           //
-    CHAR_SUBSCRIPT,             //
-    CHAR_INLINE_PASSTHROUGH,    //
-    CHAR_CROSSREFERENCE_END,    //
-    CHAR_ATTRIBUTE_REFERENCE_END,
-    CHAR_ATTRIBUTE,
-  };
-  const int length = sizeof(valid_chars) / sizeof(int32_t);
-  for (int i = 0; i < length; i++) {
-    if (c == valid_chars[i]) {
-      return true;
+    const int32_t valid_chars[] = {
+        CHAR_HIGHLIGHT,
+        CHAR_OPTION_END,
+        CHAR_STRONG,
+        CHAR_EMPHASIS,
+        CHAR_MONOSPACE,
+        CHAR_SUPERSCRIPT,
+        CHAR_SUBSCRIPT,
+        CHAR_INLINE_PASSTHROUGH,
+        CHAR_CROSSREFERENCE_END,
+        CHAR_ATTRIBUTE_REFERENCE_END,
+        CHAR_ATTRIBUTE,
+    };
+    const int length = sizeof(valid_chars) / sizeof(int32_t);
+    for (int i = 0; i < length; i++) {
+        if (c == valid_chars[i]) {
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 static bool is_punctuation(int32_t c)
 {
-  const int32_t valid_chars[] = {
-    CHAR_EM_DASH,
-    '.',
-    ',',
-    ':',
-    ';',
-    39, // '
-    '"',
-    '?',
-    '!',
-    '(',
-    ')',
-    CHAR_LDQUO,
-    CHAR_RDQUO,
-  };
-  const int length = sizeof(valid_chars) / sizeof(int32_t);
-  for (int i = 0; i < length; i++) {
-    if (c == valid_chars[i]) {
-      return true;
+    const int32_t valid_chars[] = {
+
+        CHAR_HYPHEN,
+        CHAR_HYPHEN_NONBREAKING,
+        CHAR_FIGURE_DASH,
+        CHAR_EN_DASH,
+        CHAR_EM_DASH,
+        CHAR_QUOTATION_DASH,
+
+        CHAR_LEFT_SINGLE_QUOTE,
+        CHAR_RIGHT_SINGLE_QUOTE,
+        CHAR_SINGLE_LOW_QUOTE,
+        CHAR_SINGLE_HIGH_REVERSE_QUOTE,
+        CHAR_LEFT_DOUBLE_QUOTE,
+        CHAR_RIGHT_DOUBLE_QUOTE,
+        CHAR_DOUBLE_LOW_QUOTE,
+        CHAR_DOUBLE_HIGH_REVERSE_QUOTE,
+        CHAR_ELLIPSIS,
+
+        CHAR_LDQUO,
+        CHAR_RDQUO,
+    };
+    const int length = sizeof(valid_chars) / sizeof(int32_t);
+    for (int i = 0; i < length; i++) {
+        if (
+            c == valid_chars[i]     ||
+            (c >= 33 && c <= 47)    ||
+            (c >= 58 && c <= 64)    ||
+            (c >= 91 && c <= 96)    ||
+            (c >= 123 && c <= 126)
+        ) {
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 }

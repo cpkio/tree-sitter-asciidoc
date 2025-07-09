@@ -284,20 +284,36 @@
 
 
 [
-  (table_cell_marker)
+  (table_cell_marker1)
+  (table_cell_marker2)
 ] @character
 
-(hardbreak) @character.special
+(hardbreak) @character
 
 [
   (include_tag)
 ] @label @nospell
 
-(admonition_note_label) @label.note
-(admonition_tip_label) @label.tip
-(admonition_important_label) @label.important
-(admonition_caution_label) @label.caution
-(admonition_warning_label) @label.warning
+[
+  (admonition_option_note)
+  (admonition_note_label)
+] @label.note
+[
+  (admonition_option_tip)
+  (admonition_tip_label)
+] @label.tip
+[
+  (admonition_option_important)
+  (admonition_important_label)
+] @label.important
+[
+  (admonition_option_caution)
+  (admonition_caution_label)
+] @label.caution
+[
+  (admonition_option_warning)
+  (admonition_warning_label)
+] @label.warning
 
 [
   (table_column_span_factor)
@@ -316,8 +332,15 @@
 ] @attribute
 
 [
-  (table_cell_styles)
-  (option_table)
+  (table_cell_style)
+  (cols)
+  (float)
+  (format)
+  (frame)
+  (grid)
+  (separator)
+  (stripes)
+  (width)
 ] @label
 
 [
@@ -360,7 +383,6 @@
 [
   (include_directive)
   (xref_directive)
-  (xref_directive_id)
 ] @include @nospell
 
 [
@@ -369,21 +391,42 @@
 
 [
   (monospace)
+  (monospace_u)
   (monospace_marker_start)
   (monospace_marker_end)
 ] @text.quote @nospell
 
 [
   (inline_passthrough)
+  (inline_passthrough_u)
   (inline_passthrough_marker_start)
   (inline_passthrough_marker_end)
 ] @text.literal @nospell
 
-(emphasis) @text.emphasis
-(strong) @text.strong
-(highlight) @text.highlight
-(superscript) @text.underline
-(subscript) @text.underline
+[
+  (emphasis)
+  (emphasis_u)
+] @text.emphasis
+
+[
+  (strong)
+  (strong_u)
+] @text.strong
+
+[
+  (highlight)
+  (highlight_u)
+] @text.highlight
+
+[
+  (superscript)
+  (superscript_u)
+] @text.underline
+
+[
+  (subscript)
+  (subscript_u)
+] @text.underline
 
 [
   (escape)
@@ -393,6 +436,7 @@
 [
   (list_asterisk_marker)
   (list_hyphen_marker)
+  (list_numbered_marker)
   (list_box)
   (block_continuation)
   (encoded_symbol)

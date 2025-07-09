@@ -6,12 +6,27 @@ that deaths could be at least 10 percent higher than the official toll —
 12,107 as of Tuesday — which does not take into account many people.
 
 The government’s Office of National Statistics released figures indicating
-that deaths could be at least 10 percent higher than `the official toll —
+that deaths could be at least 10 per``cent`` higher than `the official toll —
 12,107 as of Tuesday` — which does not take into account many people.
 
 The government’s Office of National Statistics released figures indicating
 that deaths could be at least 10 percent higher than the official toll —
 12,107 as of Tuesday — which «`does not take into account many people`».
+
+`-e Param:Value, Param:Value, ...`::: предоставляет
+возможность указать дополнительные параметры восстановления резервной копии
+для различных модулей сред виртуализации, таких как VMware, VMmanager,
+Rustack и другие. Позволяет настроить процесс восстановления в соответствии
+с особенностями и требованиями конкретной виртуальной среды восстановления
+
+использовать ключ `--s3=minio`
+
+* `--s3=s3_interface_provider` — задаёт провайдера, поддерживающего интерфейс S3.
+
+* `--s3-config-file=путь_к_файлу_конфигурации`. Если этот параметр
+  опускается, `pg_probackup` ищет файл конфигурации S3 сначала
+  в `/etc/pg_probackup/s3.config`, а затем
+  в `~postgres/.pg_probackup/s3.config`.
 
 ---|||
 (document
@@ -21,6 +36,9 @@ that deaths could be at least 10 percent higher than the official toll —
       (monospace_marker_end)))
   (emptyline)
   (paragraph
+    (monospace_u
+      (monospace_unconstrained_marker_start)
+      (monospace_unconstrained_marker_end))
     (monospace
       (monospace_marker_start)
       (monospace_marker_end)))
@@ -28,5 +46,43 @@ that deaths could be at least 10 percent higher than the official toll —
   (paragraph
     (monospace
       (monospace_marker_start)
-      (monospace_marker_end))))
-
+      (monospace_marker_end)))
+  (emptyline)
+  (description_list
+    (description_list_marker
+      (monospace
+        (monospace_marker_start)
+        (monospace_marker_end)))
+    (description_list_marker)
+    (paragraph))
+      (emptyline)
+      (paragraph
+        (monospace
+          (monospace_marker_start)
+          (monospace_marker_end)))
+      (emptyline)
+      (list_asterisk
+        (list_asterisk_marker)
+        (paragraph
+          (monospace
+            (monospace_marker_start)
+            (monospace_marker_end))))
+      (emptyline)
+      (list_asterisk
+        (list_asterisk_marker)
+        (paragraph
+          (monospace
+            (monospace_marker_start)
+            (monospace_marker_end))
+          (monospace
+            (monospace_marker_start)
+            (monospace_marker_end))
+          (monospace
+            (monospace_marker_start)
+            (monospace_marker_end))
+          (monospace
+            (monospace_marker_start)
+            (monospace_marker_end))
+        )
+      )
+)

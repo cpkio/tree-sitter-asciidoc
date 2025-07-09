@@ -2,13 +2,29 @@
 #define TREE_SITTER_ASCIIDOC_CHARS_H
 
 #include <tree_sitter/parser.h>
+#include "scanner.h"
 
 #define CHAR_EOF 0
 #define CHAR_NEWLINE 10 // LF
 #define CHAR_CARRIAGE_RETURN 13 // CR
 #define CHAR_NBSP 160
 
+#define CHAR_HYPHEN 8208
+#define CHAR_HYPHEN_NONBREAKING 8209
+#define CHAR_FIGURE_DASH 8210
+#define CHAR_EN_DASH 8211
 #define CHAR_EM_DASH 8212
+#define CHAR_QUOTATION_DASH 8213
+
+#define CHAR_LEFT_SINGLE_QUOTE 8216
+#define CHAR_RIGHT_SINGLE_QUOTE 8217
+#define CHAR_SINGLE_LOW_QUOTE 8218
+#define CHAR_SINGLE_HIGH_REVERSE_QUOTE 8219
+#define CHAR_LEFT_DOUBLE_QUOTE 8220
+#define CHAR_RIGHT_DOUBLE_QUOTE 8221
+#define CHAR_DOUBLE_LOW_QUOTE 8222
+#define CHAR_DOUBLE_HIGH_REVERSE_QUOTE 8223
+#define CHAR_ELLIPSIS 8230
 
 #define CHAR_SPACE ' '
 #define CHAR_FORM_FEED '\f'
@@ -39,9 +55,9 @@
 #define CHAR_SUPERSCRIPT '^'
 #define CHAR_SUBSCRIPT '~'
 #define CHAR_INLINE_PASSTHROUGH '+'
-#define CHAR_MACRO_SEPARATOR ':' // also '::' for blocks
-#define CHAR_CROSSREFERENCE_START '<' // '<<' to start
-#define CHAR_CROSSREFERENCE_END '>' // '>>' to end
+#define CHAR_MACRO_SEPARATOR ':'
+#define CHAR_CROSSREFERENCE_START '<'
+#define CHAR_CROSSREFERENCE_END '>'
 #define CHAR_ATTRIBUTE_REFERENCE_START '{'
 #define CHAR_ATTRIBUTE_REFERENCE_END '}'
 
@@ -56,7 +72,10 @@
 
 static bool is_newline(int32_t c);
 static bool is_space(int32_t c);
+static bool is_space_extended(int32_t c);
+static bool is_space_consume(ADOCScanner* scanner);
 static bool is_newline_or_space(int32_t c);
+static bool is_newline_or_space_extended(int32_t c);
 static bool is_anything(int32_t c);
 
 static bool is_number(int32_t c);
@@ -71,4 +90,4 @@ static bool is_inline_markup_start_char(int32_t c);
 static bool is_inline_markup_end_char(int32_t c);
 static bool is_punctuation(int32_t c);
 
-#endif /* ifndef TREE_SITTER_ASCIIDOC_CHARS_H */
+#endif // TREE_SITTER_ASCIIDOC_CHARS_H
