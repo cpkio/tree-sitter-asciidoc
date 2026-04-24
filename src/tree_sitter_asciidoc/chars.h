@@ -51,13 +51,13 @@
 #define CHAR_OPTION_END ']'
 #define CHAR_STRONG '*'
 #define CHAR_EMPHASIS '_'
-#define CHAR_MONOSPACE '`'
+#define CHAR_MONOSPACE '`' // also '`+'
 #define CHAR_SUPERSCRIPT '^'
 #define CHAR_SUBSCRIPT '~'
-#define CHAR_INLINE_PASSTHROUGH '+'
-#define CHAR_MACRO_SEPARATOR ':'
-#define CHAR_CROSSREFERENCE_START '<'
-#define CHAR_CROSSREFERENCE_END '>'
+#define CHAR_INLINE_PASSTHROUGH '+' // also '++' (unconstrained) and '+++'
+#define CHAR_MACRO_SEPARATOR ':' // also '::' for blocks
+#define CHAR_CROSSREFERENCE_START '<' // '<<' to start
+#define CHAR_CROSSREFERENCE_END '>' // '>>' to end
 #define CHAR_ATTRIBUTE_REFERENCE_START '{'
 #define CHAR_ATTRIBUTE_REFERENCE_END '}'
 

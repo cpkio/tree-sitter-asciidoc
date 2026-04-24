@@ -140,6 +140,14 @@ module.exports = grammar({
 
         $.description_list_marker,
         $.escape,
+
+        $.table_column_span_factor,
+        $.table_row_span_factor,
+
+        $.indexmarker_explicit_open,
+        $.indexmarker_explicit_close,
+        $.indexmarker_implicit_open,
+        $.indexmarker_implicit_close,
     ],
     extras: $ => [],
     conflicts: $ => [],
@@ -212,6 +220,7 @@ module.exports = grammar({
                         $.xref_directive,
                         $.icon_macro,
                         $.footnote_macro,
+                        // $.anchor_macro,
                         $.attribute_reference,
                         $.emphasis,
                         $.emphasis_u,
@@ -230,10 +239,16 @@ module.exports = grammar({
                         $.replacement,
                         $.escape,
                         $.encoded_symbol,
+                        // $.http,
+                        // $.http_macro,
+                        // $.email,
+                        // $.mailto_macro,
                         $.link_macro,
                         $.cross_reference,
-                        $.pass_macro,
+                        $.pass_macro,           // 17.05.2024 10:22 Не смог заставить работать нормально
                         $.image_macro,
+                        $.indexmarker_explicit,
+                        $.indexmarker_implicit,
                     ),
                 )),
 
@@ -389,7 +404,7 @@ module.exports = grammar({
                                 $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
                                 $.image_directive,
                                 $.admonition,
-                                $.attribute,
+                                $.attribute, // допустимо ли это?!
                                 $.block_continuation,
                                 $.block_example2,
                                 $.block_example3,
@@ -486,7 +501,6 @@ module.exports = grammar({
                                   $.ifdef, $.ifeval, $.endif,
                                   $.block_comment,
                                   $.comment,
-                                  $.escape,
                                   $._txt,
                                   $._callout,
                                   common.punctuation_without($, []),
@@ -568,7 +582,7 @@ module.exports = grammar({
                             )),
                             $.block_sidebar_separator,
                             ),
-        block_pass: $ => seq(
+        block_pass: $ => seq( // Тут внутри тоже ничего не должно быть, зачем я тут поставил парсинг
                             $.block_passthrough_separator,
                             repeat(choice(
                                 $._newline,
@@ -636,6 +650,7 @@ module.exports = grammar({
                             $.block_table_separator1,
                             repeat(choice(
                               $.table_cell1,
+                              // $.emptyline,
                               $._newline,
                               $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
                             )),
@@ -645,6 +660,7 @@ module.exports = grammar({
                             $.block_table_separator2,
                             repeat(choice(
                               $.table_cell2,
+                              // $.emptyline,
                               $._newline,
                               $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
                             )),
@@ -663,36 +679,30 @@ module.exports = grammar({
         table_horizontal_alignment_operator: $ => choice('<', '>', '^'),
         table_vertical_alignment_operator: $ => choice('.<', '.>', '.^'),
         table_cell_style: $ => choice('a', 'd', 'e', 'h', 'l', 'm', 's'),
-        table_column_span_factor: $ => /\d+/,
-        table_row_span_factor: $ => /\.\d+/,
-        table_span_operator: $ => '+',
         table_cell_multiplication_factor: $ => /\d+/,
-        table_cell_multiplication_operator: $ => '*',
+        table_span_operator: $ => '+',
+        table_duplication_operator: $ => '*',
         table_cell1: $ => prec.right(seq(
             optional(
-                seq(
-                    optional(choice(
-                        choice(
-                            seq(
-                                $.table_column_span_factor,
-                                $.table_row_span_factor,
-                                $.table_span_operator,
-                            ),
-                            seq(
-                                $.table_column_span_factor,
-                                $.table_span_operator,
-                            ),
-                            seq(
-                                $.table_row_span_factor,
-                                $.table_span_operator,
-                            )
-                        ),
-                    )),
-                    optional($.table_horizontal_alignment_operator),
-                    optional($.table_vertical_alignment_operator),
-                    optional($.table_cell_style)
-                )
+                choice(
+                    seq(
+                        $.table_column_span_factor,
+                        $.table_row_span_factor,
+                        choice($.table_span_operator, $.table_duplication_operator),
+                    ),
+                    seq(
+                        $.table_column_span_factor,
+                        choice($.table_span_operator, $.table_duplication_operator),
+                    ),
+                    seq(
+                        $.table_row_span_factor,
+                        choice($.table_span_operator, $.table_duplication_operator),
+                    )
+                ),
             ),
+            optional($.table_horizontal_alignment_operator),
+            optional($.table_vertical_alignment_operator),
+            optional($.table_cell_style),
             $.table_cell_marker1,
             repeat(choice(
                 $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
@@ -723,30 +733,26 @@ module.exports = grammar({
             ))
         )),
         table_cell2: $ => prec.right(seq(
-            optional(
-                seq(
-                    optional(choice(
-                        choice(
-                            seq(
-                                $.table_column_span_factor,
-                                $.table_row_span_factor,
-                                $.table_span_operator,
-                            ),
-                            seq(
-                                $.table_column_span_factor,
-                                $.table_span_operator,
-                            ),
-                            seq(
-                                $.table_row_span_factor,
-                                $.table_span_operator,
-                            )
-                        ),
-                    )),
-                    optional($.table_horizontal_alignment_operator),
-                    optional($.table_vertical_alignment_operator),
-                    optional($.table_cell_style)
-                )
-            ),
+            optional(choice(
+                choice(
+                    seq(
+                        $.table_column_span_factor,
+                        $.table_row_span_factor,
+                        choice($.table_span_operator, $.table_duplication_operator),
+                    ),
+                    seq(
+                        $.table_column_span_factor,
+                        choice($.table_span_operator, $.table_duplication_operator),
+                    ),
+                    seq(
+                        $.table_row_span_factor,
+                        choice($.table_span_operator, $.table_duplication_operator),
+                    )
+                ),
+            )),
+            optional($.table_horizontal_alignment_operator),
+            optional($.table_vertical_alignment_operator),
+            optional($.table_cell_style),
             $.table_cell_marker2,
             repeat(choice(
                 $.include_directive, $.comment, $.block_comment, $.ifdef, $.ifeval, $.endif,
@@ -802,7 +808,7 @@ module.exports = grammar({
                     $._list_options
                 ), $.parameter_recognized
             ),
-            alias(/lines="\d+\.\.\d+"/, $.highlight_lines),
+            alias(/lines="\d+\.\.\d+"/, $.highlight_lines), // Source block special
             alias(seq('caption="', $._caption_content, '"'), $.caption),
             alias(seq('reftext="', $._caption_content, '"'), $.reftext),
             $._admonition_labels,
@@ -899,7 +905,7 @@ module.exports = grammar({
         )),
         _cols_option_column_mult: $ => prec.left(seq(
                 $.table_cell_multiplication_factor,
-                $.table_cell_multiplication_operator,
+                $.table_duplication_operator,
                 optional($.table_horizontal_alignment_operator),
                 optional($.table_vertical_alignment_operator),
         )),
@@ -908,7 +914,7 @@ module.exports = grammar({
                 $._cols_option_column,
                 repeat(
                     seq(
-                        choice(',', ';'),
+                        choice(',', ';'), // Допустим ли ; в cols?
                         optional(/\s+/),
                         $._cols_option_column,
                     )
@@ -1057,7 +1063,7 @@ module.exports = grammar({
               seq(
                   $.xref_marker,
                   $._antora_resource,
-                  optional(alias(/#[A-Za-z][-_A-Za-z0-9]*/, $.id)),
+                  optional(alias(/#[A-Za-z][-_A-Za-z0-9]*/, $.id)), // Не самое удачное решение, дублировать $._identifier, но иначе получается два элемента в дереве TS
                   $.inline_option_block_marker_start,
                   alias(repeat(choice(
                     $._txt,
@@ -1099,6 +1105,8 @@ module.exports = grammar({
         _include_params: $ => prec.left(100,
                 seq(
                     $._includes_choice,
+                    // почему repeat(), optional() вызывает ошибку и переход во внешний
+                    // парсер для восстановления состояния?
                     repeat(
                         seq(
                             ',',
@@ -1157,7 +1165,7 @@ module.exports = grammar({
                           '"')
                         ),
 
-        _filepath: $ => /(([\d\w\-~_%]+|\.\.|\.)\/)*([\d\w\-~_%]+\.)+\w{1,6}/,
+        _filepath: $ => /(([\d\w\-~_%]+|\.\.|\.)\/)*([\d\w\-~_%]+\.)+\w{1,12}/,
 
         _antora_resource: $ =>
             choice(
@@ -1165,6 +1173,15 @@ module.exports = grammar({
                 alias($._filepath, $.file_path),
                 seq(
                     seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$'),
+                    alias($._filepath, $.file_path)
+                ),
+                seq(
+                    seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
+                    alias($._filepath, $.file_path)
+                ),
+                seq(
+                    seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_component), ':'),
+                    seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
                     alias($._filepath, $.file_path)
                 ),
                 seq(
@@ -1186,7 +1203,7 @@ module.exports = grammar({
             optional(choice(
                 'counter:',
                 'set:',
-                '!set:',
+                '!set:',           // Добавлено грязно
                 'set!:',
             )),
             $._identifier,
@@ -1335,10 +1352,20 @@ module.exports = grammar({
             $._txt,
             $._whitespace,
             common.punctuation_without($, []),
+            // $.strong,
+            // $.emphasis,
+            // $.highlight,
+            // $.superscript,
+            // $.subscript,
             $.inline_passthrough,
             $.attribute_reference,
             $.replacement,
             $.xref_directive,
+            // $.strong_u,
+            // $.emphasis_u,
+            // $.highlight_u,
+            // $.superscript_u,
+            // $.subscript_u,
             $.inline_passthrough_u,
         )),
 
@@ -1550,26 +1577,57 @@ module.exports = grammar({
         list_decimal: $ => seq(alias(/\u0020*\d+\.\u0020+/, $.list_marker), $.paragraph),
         list_decimal_: $ => seq($.list_numbered_marker, $.paragraph),
 
-        _description_list_marker: $ => choice('::', ':::', '::::', ';;'),
+        description_list_term: $ => seq($._text,
+                                        $.description_list_marker,
+                                        choice($._whitespace, $._newline)
+                                    ),
 
-        description_list: $ => prec.right(10, seq(
-            alias(seq($._text, $._description_list_marker), $.description_list_marker),
-            repeat1(
-                choice(
-                    $._newline,
-                    $.paragraph,
-                    $.list_asterisk,
-                    $.list_checkbox,
-                    $.list_hyphen,
-                    $.list_decimal,
-                    $.list_decimal_,
-                )
-            ),
-        )),
+        // В такой конфигурации определения должны разделяться пустой строкой; если это
+        // правило не удовлетворяется, то следующий элемент не распознается парсером,
+        // хотя Asciidoctor распознает последовательно следующие объекты этого типа
+        description_list: $ => prec.right(seq(
+            $.description_list_term,
+            $.paragraph,
+            // repeat(
+            //     choice(
+            //         $.admonition,
+            //         $.block_continuation,
+            //         $.block_example1,
+            //         $.block_example2,
+            //         $.block_example3,
+            //         $.block_listing,
+            //         $.block_literal,
+            //         $.block_open,
+            //         $.block_pass,
+            //         $.block_quote,
+            //         $.block_sidebar,
+            //         $.block_title,
+            //         $.list_asterisk,
+            //         $.list_checkbox,
+            //         $.list_decimal,
+            //         $.list_decimal_,
+            //         $.list_hyphen,
+            //         $.option_block,
+            //         $.paragraph,
+            //     )
+            // ),
+            )
+        ),
 
         http: $ => /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
 
+        // http_macro: $ => prec.left(10, seq($.http, '[', alias(optional($._text), $.linktext), ']')),
+
         email: $ => /[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+/,
+
+        // mailto_macro: $ => prec.left(10, seq(
+        //     'mailto:',
+        //     $.email,
+        //     '[',
+        //     alias(optional($._text), $.linktext),
+        //     ']'
+        //
+        // )),
 
         _link_macro_params: $ => choice(
             alias($._option_role_named, $.role),
@@ -1632,6 +1690,11 @@ module.exports = grammar({
                 )),
             )),
             '[',
+            // repeat(choice(
+            //     $._txt,
+            //     $._whitespace,
+            //     common.punctuation_without($, [ '[', ']' ])
+            // )),
             ']',
         ),
 
@@ -1640,7 +1703,7 @@ module.exports = grammar({
             'c', 'specialchars',
             'm', 'macros',
             'n', 'normal',
-            'p', 'post_replacements',
+            'p', 'post_replacements', // точно ли post_replacements??
             'r', 'replacements',
             'v', 'verbatim',
         ),
@@ -1685,19 +1748,19 @@ module.exports = grammar({
             '.text-right',
         ),
         _paragraph_options: $ => choice(
-            '%hardbreaks',
+            '%hardbreaks',  // Сохранение переносов в параграфе
         ),
         _block_options: $ => choice(
-            '%collapsible',
-            '%open',
+            '%collapsible', // Сворачиваемый блок
+            '%open',        // Блок развернут
         ),
         _source_block_options: $ => choice(
-            '%linenums',
+            '%linenums',    // Нумеровать строки в блоке source
         ),
         _table_options: $ => choice(
-            '%header',
+            '%header',      // Первая строка таблицы будет заголовком
             '%noheader',
-            '%footer',
+            '%footer',      // Последняя строка таблицы будет подвалом
             '%autowidth'
         ),
         _list_options: $ => choice('%reversed'),
@@ -1719,6 +1782,23 @@ module.exports = grammar({
             $.paragraph
         ),
         encoded_symbol: $ => /&#\d+;/,
+
+        indexmarker_explicit: $ => seq(
+                        $.indexmarker_explicit_open,
+                        repeat1(choice($._txt,
+                        common.punctuation_without($, [ // Ну понятно что это ошибка, нужно по-другому
+                            ',',
+                        ]),
+                        $._whitespace)),
+                        $.indexmarker_explicit_close),
+        indexmarker_implicit: $ => seq(
+                        $.indexmarker_implicit_open,
+                        repeat1(choice($._txt,
+                        common.punctuation_without($, [
+                            ',',
+                        ]),
+                        $._whitespace)),
+                        $.indexmarker_implicit_close),
 
     },
 })

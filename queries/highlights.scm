@@ -248,6 +248,8 @@
   (block_title)
   (page_break)
   (thematic_break)
+  (indexmarker_explicit)
+  (indexmarker_implicit)
 ]
 @text.title @spell
 
@@ -280,6 +282,10 @@
   (ifdef)
   (ifeval)
   (endif)
+  (indexmarker_explicit_open)
+  (indexmarker_explicit_close)
+  (indexmarker_implicit_open)
+  (indexmarker_implicit_close)
 ] @preproc @conditional @nospell
 
 
@@ -323,7 +329,7 @@
 
 [
   (table_cell_multiplication_factor)
-  (table_cell_multiplication_operator)
+  (table_duplication_operator)
 ] @attribute
 
 [
@@ -440,7 +446,6 @@
   (list_box)
   (block_continuation)
   (encoded_symbol)
-  (description_list_marker)
 ] @character @nospell
 
 [
@@ -478,3 +483,7 @@
 [
   (ERROR)
 ] @error
+
+[
+  (description_list_term)
+] @text.reference

@@ -1,10 +1,12 @@
 // vim:tw=0:sw=4:virtualedit=all
+// #include <tree_sitter/parser.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "chars.c"
 #include "markers.h"
 #include "tokens.h"
+#include "states.h"
 #include "tree_sitter_asciidoc/marker_types.h"
 #include "scanner.h"
 
@@ -37,6 +39,9 @@ static ADOCScanner* adoc_scanner_create()
     buildSuffixTree(STR_SECTION_HEADER0,              M_TITLE0,                                       scanner->root);
     buildSuffixTree(STR_SECTION_HEADER1,              M_TITLE1,                                       scanner->root);
     buildSuffixTree(STR_SECTION_HEADER2,              M_TITLE2,                                       scanner->root);
+    // buildSuffixTree(STR_SECTION_HEADER3,           M_TITLE3,                                       scanner->root);
+    // buildSuffixTree(STR_SECTION_HEADER4,           M_TITLE4,                                       scanner->root);
+    // buildSuffixTree(STR_SECTION_HEADER5,           M_TITLE5,                                       scanner->root);
     buildSuffixTree(STR_ATTRIBUTE_MARKER,             M_ATTRIBUTE_MARKER,                             scanner->root);
 
     buildSuffixTree(STR_ATTRIBUTE_MARKER_START_NEG,   M_ATTRIBUTE_MARKER_START_NEG,                   scanner->root);
@@ -69,6 +74,7 @@ static ADOCScanner* adoc_scanner_create()
     buildSuffixTree(STR_XREF,                         M_XREF,                                         scanner->root);
     buildSuffixTree(STR_FOOTNOTE,                     M_FOOTNOTE,                                     scanner->root);
     buildSuffixTree(STR_ICON,                         M_ICON,                                         scanner->root);
+    //   buildSuffixTree(STR_HTTP,                    M_HTTP,                                         scanner->root);
     buildSuffixTree(STR_LINK,                         M_LINK,                                         scanner->root);
     buildSuffixTree(STR_MAILTO,                       M_MAILTO,                                       scanner->root);
 
@@ -103,18 +109,26 @@ static ADOCScanner* adoc_scanner_create()
     buildSuffixTree(STR_TABLE_CELL_MARKER1,           M_TABLE_CELL_MARKER1,                           scanner->root);
     buildSuffixTree(STR_TABLE_CELL_MARKER2,           M_TABLE_CELL_MARKER2,                           scanner->root);
 
+    // see STR_OPTION_START
+    // see STR_OPTION_END
+
     buildSuffixTree(STR_PAGE_BREAK,                   M_PAGE_BREAK,                                   scanner->root);
     buildSuffixTree(STR_THEMATIC_BREAK1,              M_THEMATIC_BREAK,                               scanner->root);
     buildSuffixTree(STR_THEMATIC_BREAK2,              M_THEMATIC_BREAK_UNNUMBERED_ASTERISK3,          scanner->root);
     buildSuffixTree(STR_BLOCK_TITLE,                  M_BLOCK_TITLE_LIST_NUMBERED1,                   scanner->root);
 
+    // buildSuffixTree(STR_LIST_UNNUMBERED_ASTERISK1, M_LIST_UNNUMBERED_ASTERISK,                     scanner->root);
     buildSuffixTree(STR_LIST_UNNUMBERED_ASTERISK2,    M_LIST_UNNUMBERED_ASTERISK,                     scanner->root);
+    // buildSuffixTree(STR_LIST_UNNUMBERED_ASTERISK3, M_LIST_UNNUMBERED_ASTERISK,                     scanner->root);
+    // buildSuffixTree(STR_LIST_UNNUMBERED_ASTERISK4, M_LIST_UNNUMBERED_ASTERISK,                     scanner->root);
     buildSuffixTree(STR_LIST_UNNUMBERED_ASTERISK5,    M_LIST_UNNUMBERED_ASTERISK,                     scanner->root);
 
     buildSuffixTree(STR_LIST_HYPHEN,                  M_LIST_UNNUMBERED_HYPHEN,                       scanner->root);
 
+    // buildSuffixTree(STR_LIST_NUMBERED1,            M_LIST_NUMBERED,                                scanner->root);
     buildSuffixTree(STR_LIST_NUMBERED2,               M_LIST_NUMBERED,                                scanner->root);
     buildSuffixTree(STR_LIST_NUMBERED3,               M_LIST_NUMBERED,                                scanner->root);
+    // buildSuffixTree(STR_LIST_NUMBERED4,            M_LIST_NUMBERED,                                scanner->root);
     buildSuffixTree(STR_LIST_NUMBERED5,               M_LIST_NUMBERED,                                scanner->root);
 
     buildSuffixTree(STR_ADMONITION_NOTE,              M_ADMONITION_NOTE,                              scanner->root);
@@ -142,6 +156,30 @@ static ADOCScanner* adoc_scanner_create()
     buildSuffixTree(STR_DESCRIPTION_LIST3,            M_DESCRIPTION_LIST,                             scanner->root);
     buildSuffixTree(STR_DESCRIPTION_LIST4,            M_DESCRIPTION_LIST,                             scanner->root);
     buildSuffixTree(STR_ESCAPE,                       M_ESCAPE,                                       scanner->root);
+
+    buildSuffixTree(STR_TABLE_COLUMN_SPAN_FACTOR2,    M_TABLE_COLUMN_SPAN_FACTOR,                     scanner->root);
+    buildSuffixTree(STR_TABLE_COLUMN_SPAN_FACTOR3,    M_TABLE_COLUMN_SPAN_FACTOR,                     scanner->root);
+    buildSuffixTree(STR_TABLE_COLUMN_SPAN_FACTOR4,    M_TABLE_COLUMN_SPAN_FACTOR,                     scanner->root);
+    buildSuffixTree(STR_TABLE_COLUMN_SPAN_FACTOR5,    M_TABLE_COLUMN_SPAN_FACTOR,                     scanner->root);
+    buildSuffixTree(STR_TABLE_COLUMN_SPAN_FACTOR6,    M_TABLE_COLUMN_SPAN_FACTOR,                     scanner->root);
+    buildSuffixTree(STR_TABLE_COLUMN_SPAN_FACTOR7,    M_TABLE_COLUMN_SPAN_FACTOR,                     scanner->root);
+    buildSuffixTree(STR_TABLE_COLUMN_SPAN_FACTOR8,    M_TABLE_COLUMN_SPAN_FACTOR,                     scanner->root);
+    buildSuffixTree(STR_TABLE_COLUMN_SPAN_FACTOR9,    M_TABLE_COLUMN_SPAN_FACTOR,                     scanner->root);
+
+    buildSuffixTree(STR_TABLE_ROW_SPAN_FACTOR2,       M_TABLE_ROW_SPAN_FACTOR,                        scanner->root);
+    buildSuffixTree(STR_TABLE_ROW_SPAN_FACTOR3,       M_TABLE_ROW_SPAN_FACTOR,                        scanner->root);
+    buildSuffixTree(STR_TABLE_ROW_SPAN_FACTOR4,       M_TABLE_ROW_SPAN_FACTOR,                        scanner->root);
+    buildSuffixTree(STR_TABLE_ROW_SPAN_FACTOR5,       M_TABLE_ROW_SPAN_FACTOR,                        scanner->root);
+    buildSuffixTree(STR_TABLE_ROW_SPAN_FACTOR6,       M_TABLE_ROW_SPAN_FACTOR,                        scanner->root);
+    buildSuffixTree(STR_TABLE_ROW_SPAN_FACTOR7,       M_TABLE_ROW_SPAN_FACTOR,                        scanner->root);
+    buildSuffixTree(STR_TABLE_ROW_SPAN_FACTOR8,       M_TABLE_ROW_SPAN_FACTOR,                        scanner->root);
+    buildSuffixTree(STR_TABLE_ROW_SPAN_FACTOR9,       M_TABLE_ROW_SPAN_FACTOR,                        scanner->root);
+
+    buildSuffixTree(STR_INDEXMARKER_EXPLICIT_OPEN,    M_INDEXMARKER_EXPLICIT_OPEN,                    scanner->root);
+    buildSuffixTree(STR_INDEXMARKER_EXPLICIT_CLOSE,   M_INDEXMARKER_EXPLICIT_CLOSE,                   scanner->root);
+    buildSuffixTree(STR_INDEXMARKER_IMPLICIT_OPEN,    M_INDEXMARKER_IMPLICIT_OPEN,                    scanner->root);
+    buildSuffixTree(STR_INDEXMARKER_IMPLICIT_CLOSE,   M_INDEXMARKER_IMPLICIT_CLOSE,                   scanner->root);
+
 
     return scanner;
 }
@@ -202,6 +240,10 @@ static bool match_before(ADOCScanner* scanner, char* value, size_t length, bool 
         match = (value[length - i - 1] == items[i]);
     }
     bool match_end = func_ptr(items, length);
+    // if (match && match_end) {
+    //     // printf("match `%s` at last position %d > %d\n", value, length, match && match_end );
+    //     printf("`%d` =? `%d`\n", *(items+length), items[length]);
+    // }
     return match && match_end;
 }
 
@@ -217,7 +259,7 @@ static void adoc_scanner_skip(ADOCScanner* scanner)
 {
     TSLexer* lexer = scanner->lexer;
     shift(scanner, scanner->lookahead);
-    lexer->advance(lexer, true);
+    lexer->advance(lexer, true); // Текущий символ будет считаться пробельным и не включится в диапазон
     scanner->lookahead = lexer->lookahead;
 }
 
@@ -243,6 +285,7 @@ Node* createNode(char glyph)
     node->size = 0;
     node->glyph = glyph;
     for (size_t i = 0; i < EDGELIMIT; i++) {
+        // Важная штука. Оказывается, массивы не зануляются по умолчанию, и без этого не работает isLeaf
         node->children[i] = NULL;
     }
     return node;
@@ -282,6 +325,7 @@ Node* findNode(int32_t glyph, const Node* start)
     return NULL;
 }
 
+// В этой функции мы не проверяем наличие буквы в дочерних узлах ноды, просто добавляем
 Node* addNode(char glyph, Node* here)
 {
     Edge* newEdge = malloc(sizeof(Edge));
@@ -303,6 +347,10 @@ void buildSuffixTree(const char* s, enum MarkerType token, Node* root)
 
     Node* n = findNode(s[0], root);
 
+    // Найден ли первый символ строки s как ДОЧЕРНИЙ для текущего узла?
+    // Если найден, то вызываем эту же функцию, передав ей найденный (дочерний) узел и остаток строки (substr)
+    // Если не найден, просто добавляем всю строку
+
     if (n == NULL) {
         Node* f = addNode(s[0], root);
         void* substr = calloc(20, sizeof(char));
@@ -316,22 +364,30 @@ void buildSuffixTree(const char* s, enum MarkerType token, Node* root)
     }
 }
 
+// Эта фунция ищет совпадение строки с деревом суффиксов, но в парсере нам это
+// не нужно, мы не со строками работаем. Оставлю для примера себе же
 enum MarkerType matchTok(char* s, const Node* root)
 {
+    // Если мы дошли до конца искомой строки, возвращаем токен того
+    // узла, на котором находимся
     if (strlen(s) == 0) {
         return root->token;
     }
 
+    // Если дочерних нет, возвращаем ничто — не нашли
     if (isLeaf(root)) {
         return M_NONE;
     }
 
+    // Если ненулевая длина искомой строки и есть дочерние ноды — ищем
     Node* n = findNode(s[0], root);
 
+    // Ничего не нашли — возвращаем ничто
     if (n == NULL) {
         return M_NONE;
     }
 
+    // Если что-то нашли в дочерних, идем дальше
     if (n) {
         void* substr = calloc(20, sizeof(char));
         memcpy(substr, s + 1, strlen(s) - 1);
@@ -339,19 +395,35 @@ enum MarkerType matchTok(char* s, const Node* root)
     }
 }
 
+// Эта функция должна работать в связке с парсером посимвольно
+// Можно конечно и уменьшить количество параметров, всё равно ж всё в scanner сидит…
 enum MarkerType matchGlyph(int32_t s, const Node* root, ADOCScanner* scanner)
 {
+    // printf("current is `%c`(%d), looking for `%c`(%d)\n", root->glyph, root->glyph, s, s);
+
+    // Если в парсере следующий символ новой строки, просто выходим без считывания
+    // if (is_newline(s)) return M_NONE;
+
+    // Если дочерних нет, возвращаем текущий токен ноды
     if (isLeaf(root)) {
+        // printf("root is Leaf\n");
         return root->token;
     }
     Node* n = findNode(s, root);
 
+    // Если нашли в дочерних, идем дальше
     if (n) {
+        // Раз мы нашли следующий символ в дереве суффиксов, поглощаем этот символ
         scanner->advance(scanner);
         return matchGlyph(scanner->lookahead, n, scanner);
     }
 
+    // Ничего не нашли?
+    // Если токен текущей ноды не простой текст, возвращаем этот токен без чтения.
+    // В другом случае считываем следующий символ и возвращаем «ничего не найдено».
     if (n == NULL) {
+        // printf("  `%c`(%d) not found in children\n", s, s);
+        // printf("  this token is %d\n", root->token);
         if (root->token != M_NONE) {
             return root->token;
         }
@@ -399,17 +471,40 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
     bool (*match_any)(int32_t*, size_t) = &m_any;
     bool (*match_emptyline)(int32_t*, size_t) = &m_emptyline;
 
+    // Проверим, переходит ли парсер во внешний в связи с ошибкой
+    // if (valid_symbols[T_ERROR]) {
+    //     printf("TS is in error recovery mode!");
+    //     return false;
+    // }
+
+    // if (
+    //     (
+    //         GET_BIT(CTX_OPTIONINLINE) ||
+    //         GET_BIT(CTX_OPTIONBLOCK)
+    //
+    //     ) &&
+    //     !(scanner->lookahead == CHAR_OPTION_END)
+    // ) return false;
+
+    ///////////////
+    // ПРОБЕЛЫ
+    ///////////////
     if (
         valid_symbols[T_WHITESPACE] &&
         is_space(scanner->lookahead)
     ) {
         while (is_space(scanner->lookahead)) {
+            // А может тут имеет смысл СКИПАТЬ? И тогда можно будет убрать
+            // _whitespace и решать эти проблемы во внешнем парсере
             scanner->advance(scanner);
         }
         lexer->result_symbol = T_WHITESPACE;
         return true;
     }
 
+    ///////////////
+    // CR
+    ///////////////
     if (
         valid_symbols[T_EMPTYLINE] &&
         is_newline(scanner->lookahead) &&
@@ -419,6 +514,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
         if (scanner->lookahead == CHAR_NEWLINE) {
             scanner->advance(scanner);
             lexer->result_symbol = T_EMPTYLINE;
+            // printf("output emptyline\n");
             return true;
         }
     }
@@ -431,6 +527,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
         if (scanner->lookahead == CHAR_NEWLINE) {
             scanner->advance(scanner);
             lexer->result_symbol = T_NEWLINE;
+            // printf("output newline1\n");
             return true;
         }
     }
@@ -443,12 +540,41 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
         if (scanner->lookahead == CHAR_NEWLINE || scanner->lookahead == CHAR_EOF) {
             scanner->advance(scanner);
             lexer->result_symbol = T_NEWLINE;
+            // printf("output newline2\n");
             return true;
         }
     }
 
+    ///////////////
+    // LF
+    ///////////////
+    // if (scanner->lookahead == CHAR_NEWLINE) {
+    //   scanner->skip(scanner);
+    //   lexer->result_symbol = T_NEWLINE;
+    //   return true;
+    // }
+
+    /*
+
+    Как работать с новым парсером?
+
+    По сути к указателю текста прикреплено дерево суффиксов, которое каждый раз
+    считывает структуру и ищет совпадения.
+
+    Каждый раз TS вызывает scanner->scan()
+
+    У нас есть обратный буфер и lookahead
+
+    1. следующий символ (lookahead) есть среди дочерних в root
+
+    2. следующего символа (lookahead) нет среди дочерних в root, наверное это
+    пробел или что-то схожее, нужно ли применять анализаторы посимвольно?
+
+    */
+
     enum MarkerType match;
 
+    // Я ожидаю, что пробел никогда не будет первым символом в дереве узлов, поэтому и не проверяю
     if (!scanner->eof && !is_newline_or_space(scanner->lookahead)) {
         match = matchGlyph(scanner->lookahead, scanner->root, scanner);
 
@@ -459,6 +585,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                 lexer->result_symbol = T_TEXT;
                 return true;
             }
+            // printf("found text `%c`, exiting\n", scanner->lookbehind->stack[0]);
             break;
         case M_MONOSPACE:
             if (
@@ -556,6 +683,10 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                 return true;
             }
             break;
+        // case M_HARDBREAK:
+        //     break;
+        // case M_BLOCK_CONTINUATION:
+        //     break;
         case M_TITLE0:
             if (
                 valid_symbols[T_TITLE_MARKER0]
@@ -583,6 +714,18 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                 return true;
             }
             break;
+        // case M_TITLE3:
+        //     lexer->result_symbol = T_TITLE_MARKER3;
+        //     return true;
+        //     break;
+        // case M_TITLE4:
+        //     lexer->result_symbol = T_TITLE_MARKER4;
+        //     return true;
+        //     break;
+        // case M_TITLE5:
+        //     lexer->result_symbol = T_TITLE_MARKER5;
+        //     return true;
+        //     break;
         case M_ATTRIBUTE_MARKER:
             if (
                 valid_symbols[T_ATTRIBUTE_MARKER_START] &&
@@ -599,6 +742,13 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                 return true;
             }
             break;
+
+        // По идее отмена атрибута не должна иметь никакого значения (value), просто
+        // конструкция отмены
+        // Однако из-за устройства парсера отмена атрибута в начале — может иметь value,
+        // но отмена атрибута со знаком в конце — не может
+        // Это решаемо за счёт добавления контекстов, или работы в пределах grammar.js
+
         case M_ATTRIBUTE_MARKER_START_NEG:
             if (
                 valid_symbols[T_ATTRIBUTE_MARKER_START_NEG] &&
@@ -974,6 +1124,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
         case M_OPTION_END:
             if (
                 valid_symbols[T_INLINE_OPTION_BLOCK_MARKER_END]
+                // match_before(scanner, STR_OPTION_END, strlen(STR_OPTION_END), match_newline)
             ) {
                 lexer->result_symbol = T_INLINE_OPTION_BLOCK_MARKER_END;
                 return true;
@@ -998,6 +1149,9 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
             else lexer->result_symbol = T_TEXT;
             return true;
             break;
+        // TODO Это сепаратор, а  в grammar.js он указан как block_comment,
+        // и нет отдельной структуры под него. Похоже что в прошлом парсере
+        // всё подряд считывалось в этот блок…
         case M_BLOCK_COMMENT_MARKER:
             if (
                 valid_symbols[T_BLOCK_COMMENT_MARKER] &&
@@ -1145,6 +1299,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                 is_newline(scanner->lookahead)
             ) {
                 lexer->result_symbol = T_BLOCK_TABLE_SEPARATOR1;
+                TOGGLE_BIT(CTX_TABLE1BLOCK);
                 return true;
             }
             break;
@@ -1155,6 +1310,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                 is_newline(scanner->lookahead)
             ) {
                 lexer->result_symbol = T_BLOCK_TABLE_SEPARATOR2;
+                TOGGLE_BIT(CTX_TABLE2BLOCK);
                 return true;
             }
             break;
@@ -1209,7 +1365,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
         case M_BLOCK_TITLE_LIST_NUMBERED1:
             if (
                 valid_symbols[T_BLOCK_TITLE_MARKER] &&
-                match_before(scanner, STR_BLOCK_TITLE, strlen(STR_BLOCK_TITLE), match_emptyline) &&
+                match_before(scanner, STR_BLOCK_TITLE, strlen(STR_BLOCK_TITLE), match_newline) &&
                 !is_space(scanner->lookahead) &&
                 !is_number(scanner->lookahead)
             ) {
@@ -1364,7 +1520,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                 return true;
             }
             break;
-        case M_IFEND:
+        case M_IFEND:   // Переименовать, неконсистентно
             if (
                 valid_symbols[T_ENDIF_MARKER]
             )
@@ -1419,7 +1575,72 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                 return true;
             }
             break;
+        case M_TABLE_COLUMN_SPAN_FACTOR:
+            if (
+                valid_symbols[T_TABLE_COLUMN_SPAN_FACTOR] &&
+                GET_BIT(CTX_TABLE1BLOCK)
+            )
+            {
+                scanner->advance(scanner);
+                lexer->result_symbol = T_TABLE_COLUMN_SPAN_FACTOR;
+                return true;
+            } else {
+                lexer->result_symbol = T_TEXT;
+                return true;
+            }
+            break;
+        case M_TABLE_ROW_SPAN_FACTOR:
+            if (
+                valid_symbols[T_TABLE_ROW_SPAN_FACTOR] &&
+                GET_BIT(CTX_TABLE1BLOCK)
+            )
+            {
+                scanner->advance(scanner);
+                lexer->result_symbol = T_TABLE_ROW_SPAN_FACTOR;
+                return true;
+            } else {
+                lexer->result_symbol = T_TEXT;
+                return true;
+            }
+            break;
+        case M_INDEXMARKER_EXPLICIT_OPEN:
+            if (
+                valid_symbols[T_INDEXMARKER_EXPLICIT_OPEN]
+            )
+            {
+                lexer->result_symbol = T_INDEXMARKER_EXPLICIT_OPEN;
+                return true;
+            }
+            break;
+        case M_INDEXMARKER_EXPLICIT_CLOSE:
+            if (
+                valid_symbols[T_INDEXMARKER_EXPLICIT_CLOSE]
+            )
+            {
+                lexer->result_symbol = T_INDEXMARKER_EXPLICIT_CLOSE;
+                return true;
+            }
+            break;
+        case M_INDEXMARKER_IMPLICIT_OPEN:
+            if (
+                valid_symbols[T_INDEXMARKER_IMPLICIT_OPEN]
+            )
+            {
+                lexer->result_symbol = T_INDEXMARKER_IMPLICIT_OPEN;
+                return true;
+            }
+            break;
+        case M_INDEXMARKER_IMPLICIT_CLOSE:
+            if (
+                valid_symbols[T_INDEXMARKER_IMPLICIT_CLOSE]
+            )
+            {
+                lexer->result_symbol = T_INDEXMARKER_IMPLICIT_CLOSE;
+                return true;
+            }
+            break;
         default:
+            // printf("unknown `%c`(%d)\n", scanner->lookahead, scanner->lookahead);
             break;
         }
     }

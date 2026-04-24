@@ -19,7 +19,7 @@ that deaths could be at least 10 percent higher than the official toll —
 Rustack и другие. Позволяет настроить процесс восстановления в соответствии
 с особенностями и требованиями конкретной виртуальной среды восстановления
 
-использовать ключ `--s3=minio`
+Использовать ключ `--s3=minio`
 
 * `--s3=s3_interface_provider` — задаёт провайдера, поддерживающего интерфейс S3.
 
@@ -49,40 +49,38 @@ Rustack и другие. Позволяет настроить процесс в
       (monospace_marker_end)))
   (emptyline)
   (description_list
-    (description_list_marker
+      (description_list_term
+        (monospace
+          (monospace_marker_start)
+          (monospace_marker_end))
+        (description_list_marker))
+      (paragraph))
+    (emptyline)
+    (paragraph
       (monospace
         (monospace_marker_start)
         (monospace_marker_end)))
-    (description_list_marker)
-    (paragraph))
-      (emptyline)
+    (emptyline)
+    (list_asterisk
+      (list_asterisk_marker)
       (paragraph
         (monospace
           (monospace_marker_start)
-          (monospace_marker_end)))
-      (emptyline)
-      (list_asterisk
-        (list_asterisk_marker)
-        (paragraph
-          (monospace
-            (monospace_marker_start)
-            (monospace_marker_end))))
-      (emptyline)
-      (list_asterisk
-        (list_asterisk_marker)
-        (paragraph
-          (monospace
-            (monospace_marker_start)
-            (monospace_marker_end))
-          (monospace
-            (monospace_marker_start)
-            (monospace_marker_end))
-          (monospace
-            (monospace_marker_start)
-            (monospace_marker_end))
-          (monospace
-            (monospace_marker_start)
-            (monospace_marker_end))
-        )
-      )
+          (monospace_marker_end))))
+    (emptyline)
+    (list_asterisk
+      (list_asterisk_marker)
+      (paragraph
+        (monospace
+          (monospace_marker_start)
+          (monospace_marker_end))
+        (monospace
+          (monospace_marker_start)
+          (monospace_marker_end))
+        (monospace
+          (monospace_marker_start)
+          (monospace_marker_end))
+        (monospace
+          (monospace_marker_start)
+          (monospace_marker_end))))
 )

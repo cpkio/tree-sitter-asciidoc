@@ -23,13 +23,10 @@ cell 2
   (option_block
     (block_option_marker_start)
     (parameter_recognized)
-    (option_table
-      (cols)
-      (cols
-        (table_cell_multiplication_factor)
-        (table_cell_multiplication_factor)
-        (table_cell_multiplication_factor))
-      (cols))
+    (cols
+      (table_cell_multiplication_factor)
+      (table_cell_multiplication_factor)
+      (table_cell_multiplication_factor))
     (block_option_marker_end))
   (block_table1
     (block_table_separator1)

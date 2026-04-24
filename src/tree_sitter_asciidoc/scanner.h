@@ -5,12 +5,15 @@
 
 #include <tree_sitter/parser.h>
 #include "marker_types.h"
+// #include "states.h"
 
 #define EDGELIMIT 64
 
 typedef struct Edge {
     struct Node* to;
 } Edge;
+
+// ВАЖНО: tree-sitter оперирует int32_t в качестве символов
 
 typedef struct Node {
     size_t size;

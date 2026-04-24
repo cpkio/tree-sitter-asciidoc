@@ -167,15 +167,15 @@ static bool is_word(int32_t c)
 static bool is_inline_markup_start_char(int32_t c)
 {
     const int32_t valid_chars[] = {
-        CHAR_HIGHLIGHT,
-        CHAR_OPTION_START,
-        CHAR_STRONG,
-        CHAR_EMPHASIS,
-        CHAR_MONOSPACE,
-        CHAR_SUPERSCRIPT,
-        CHAR_SUBSCRIPT,
-        CHAR_INLINE_PASSTHROUGH,
-        CHAR_CROSSREFERENCE_START,
+        CHAR_HIGHLIGHT,             // Для случая [.role]#my text#
+        CHAR_OPTION_START,          // Параметры макросов, инклюдов и прочего
+        CHAR_STRONG,                //
+        CHAR_EMPHASIS,              //
+        CHAR_MONOSPACE,             //
+        CHAR_SUPERSCRIPT,           //
+        CHAR_SUBSCRIPT,             //
+        CHAR_INLINE_PASSTHROUGH,    // Для этого макроса действуют те же правила, что и для курсивов
+        CHAR_CROSSREFERENCE_START,  //
         CHAR_ATTRIBUTE_REFERENCE_START,
         CHAR_ATTRIBUTE,
         CHAR_ESCAPE,
@@ -192,15 +192,15 @@ static bool is_inline_markup_start_char(int32_t c)
 static bool is_inline_markup_end_char(int32_t c)
 {
     const int32_t valid_chars[] = {
-        CHAR_HIGHLIGHT,
-        CHAR_OPTION_END,
-        CHAR_STRONG,
-        CHAR_EMPHASIS,
-        CHAR_MONOSPACE,
-        CHAR_SUPERSCRIPT,
-        CHAR_SUBSCRIPT,
-        CHAR_INLINE_PASSTHROUGH,
-        CHAR_CROSSREFERENCE_END,
+        CHAR_HIGHLIGHT,             //
+        CHAR_OPTION_END,            //
+        CHAR_STRONG,                //
+        CHAR_EMPHASIS,              //
+        CHAR_MONOSPACE,             //
+        CHAR_SUPERSCRIPT,           //
+        CHAR_SUBSCRIPT,             //
+        CHAR_INLINE_PASSTHROUGH,    // Для этого макроса действуют те же правила, что и для курсивов
+        CHAR_CROSSREFERENCE_END,    //
         CHAR_ATTRIBUTE_REFERENCE_END,
         CHAR_ATTRIBUTE,
     };
