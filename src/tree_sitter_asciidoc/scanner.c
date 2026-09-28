@@ -598,6 +598,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                     is_inline_markup_start_char(prev)
                 )
             ) {
+                SET_BIT(CTX_MONOSPACE);
                 lexer->result_symbol = T_MONOSPACE_MARKER_START;
                 return true;
             }
@@ -609,6 +610,7 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                     is_punctuation(scanner->lookahead)
                 )
             ) {
+                CLEAR_BIT(CTX_MONOSPACE);
                 lexer->result_symbol = T_MONOSPACE_MARKER_END;
                 return true;
             }
@@ -617,12 +619,14 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
             if (
                 valid_symbols[T_MONOSPACE_UNCONSTRAINED_MARKER_START]
             ) {
+                SET_BIT(CTX_MONOSPACE);
                 lexer->result_symbol = T_MONOSPACE_UNCONSTRAINED_MARKER_START;
                 return true;
             }
             if (
                 valid_symbols[T_MONOSPACE_UNCONSTRAINED_MARKER_END]
             ) {
+                CLEAR_BIT(CTX_MONOSPACE);
                 lexer->result_symbol = T_MONOSPACE_UNCONSTRAINED_MARKER_END;
                 return true;
             }
