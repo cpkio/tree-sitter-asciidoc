@@ -1,4 +1,5 @@
 const common = require('./common/grammar.js')
+const ident = /[A-Za-z][-_0-9A-Za-z]*/
 
 module.exports = grammar({
     name: 'asciidoc',
@@ -197,7 +198,7 @@ module.exports = grammar({
 
         _not_newline: $ => /[^\r\n]+/,
 
-        _identifier: $ => prec.right(0, /[A-Za-z][-_0-9A-Za-z]*/),
+        _identifier: $ => prec.right(0, ident),
 
         paragraph: $ => prec.right(0, repeat1(
                           choice(
@@ -1063,7 +1064,7 @@ module.exports = grammar({
               seq(
                   $.xref_marker,
                   $._antora_resource,
-                  optional(alias(/#[A-Za-z][-_A-Za-z0-9]*/, $.id)), // Не самое удачное решение, дублировать $._identifier, но иначе получается два элемента в дереве TS
+                  optional(alias(token(seq('#', ident)), $.id)),
                   $.inline_option_block_marker_start,
                   alias(repeat(choice(
                     $._txt,
@@ -1180,13 +1181,13 @@ module.exports = grammar({
                     alias($._filepath, $.file_path)
                 ),
                 seq(
-                    seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_component), ':'),
                     seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
+                    seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$'),
                     alias($._filepath, $.file_path)
                 ),
                 seq(
+                    seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_component), ':'),
                     seq(alias(choice(choice($._identifier, $.attribute_reference), $.attribute_reference), $.antora_resource_module), ':'),
-                    seq(alias(choice('page', 'image', 'partial', 'example', 'attachment'), $.antora_resource_family), '$'),
                     alias($._filepath, $.file_path)
                 ),
                 seq(
@@ -1249,7 +1250,7 @@ module.exports = grammar({
         _in_emphasis: $ => repeat1(choice(
             $._txt,
             $._whitespace,
-            common.punctuation_without($, []),
+            common.punctuation_without($, ['_']),
             $.strong,
             $.monospace,
             $.highlight,
@@ -1300,7 +1301,7 @@ module.exports = grammar({
         _in_strong: $ => repeat1(choice(
             $._txt,
             $._whitespace,
-            common.punctuation_without($, []),
+            common.punctuation_without($, ['*']),
             $.emphasis,
             $.monospace,
             $.highlight,
@@ -1351,7 +1352,7 @@ module.exports = grammar({
         _in_monospace: $ => repeat1(choice(
             $._txt,
             $._whitespace,
-            common.punctuation_without($, []),
+            common.punctuation_without($, ['`']),
             // $.strong,
             // $.emphasis,
             // $.highlight,
@@ -1402,7 +1403,7 @@ module.exports = grammar({
         _in_highlight: $ => repeat1(choice(
             $._txt,
             $._whitespace,
-            common.punctuation_without($, []),
+            common.punctuation_without($, ['#']),
             $.strong,
             $.emphasis,
             $.monospace,
@@ -1453,7 +1454,7 @@ module.exports = grammar({
         _in_superscript: $ => repeat1(choice(
             $._txt,
             $._whitespace,
-            common.punctuation_without($, []),
+            common.punctuation_without($, ['^']),
             $.strong,
             $.emphasis,
             $.monospace,
@@ -1504,7 +1505,7 @@ module.exports = grammar({
         _in_subscript: $ => repeat1(choice(
             $._txt,
             $._whitespace,
-            common.punctuation_without($, []),
+            common.punctuation_without($, ['~']),
             $.strong,
             $.emphasis,
             $.monospace,

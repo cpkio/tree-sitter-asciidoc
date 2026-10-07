@@ -184,11 +184,24 @@ static ADOCScanner* adoc_scanner_create()
     return scanner;
 }
 
+static void freeNode(Node* node) {
+    if (!node) return;
+    for (size_t i = 0; i < node->size; i++) {
+        if (node->children[i]) {
+            freeNode(node->children[i]->to);
+            free(node->children[i]);
+        }
+    }
+    free(node);
+}
+
 static void adoc_scanner_destroy(ADOCScanner* scanner)
 {
-    free(scanner->root);
-    free(scanner->lookbehind);
-    free(scanner);
+    if (scanner) {
+        freeNode(scanner->root);
+        free(scanner->lookbehind);
+        free(scanner);
+    }
 }
 
 static void shift(ADOCScanner* scanner, int32_t value)
@@ -237,9 +250,10 @@ static bool match_before(ADOCScanner* scanner, char* value, size_t length, bool 
     bool match = true;
     int32_t* items = scanner->lookbehind->stack;
     for (size_t i = 0; i < length && match; i++) {
-        match = (value[length - i - 1] == items[i]);
+        match = ((int32_t)(unsigned char)value[length - i - 1] == items[i]);
     }
     bool match_end = func_ptr(items, length);
+    if (length > STACK_SIZE) return false;
     // if (match && match_end) {
     //     // printf("match `%s` at last position %d > %d\n", value, length, match && match_end );
     //     printf("`%d` =? `%d`\n", *(items+length), items[length]);
@@ -271,7 +285,7 @@ static unsigned adoc_scanner_serialize(ADOCScanner* scanner, char* buffer)
 
 static void adoc_scanner_deserialize(ADOCScanner* scanner, const char* buffer, unsigned length)
 {
-    if (buffer != NULL) {
+    if ( buffer != NULL && length >= sizeof(lookbehind_s) ) {
         memcpy(scanner->lookbehind, (void*)buffer, sizeof(lookbehind_s));
     }
 }
@@ -284,6 +298,7 @@ Node* createNode(char glyph)
     node->token = M_NONE;
     node->size = 0;
     node->glyph = glyph;
+    node->root = false;
     for (size_t i = 0; i < EDGELIMIT; i++) {
         // Важная штука. Оказывается, массивы не зануляются по умолчанию, и без этого не работает isLeaf
         node->children[i] = NULL;
@@ -293,7 +308,7 @@ Node* createNode(char glyph)
 
 bool isLeaf(const Node* node)
 {
-    return node->children[0] == NULL;
+    return node->size == 0;
 }
 
 void listNode(const Node* node)
@@ -328,13 +343,14 @@ Node* findNode(int32_t glyph, const Node* start)
 // В этой функции мы не проверяем наличие буквы в дочерних узлах ноды, просто добавляем
 Node* addNode(char glyph, Node* here)
 {
+    if (here->size >= EDGELIMIT) { return NULL; }
     Edge* newEdge = malloc(sizeof(Edge));
     newEdge->to = createNode(glyph);
 
+    here->children[here->size] = newEdge;
     here->size++;
-    here->children[here->size-1] = newEdge;
 
-    return here->children[here->size-1]->to;
+    return newEdge->to;
 }
 
 
@@ -353,14 +369,10 @@ void buildSuffixTree(const char* s, enum MarkerType token, Node* root)
 
     if (n == NULL) {
         Node* f = addNode(s[0], root);
-        void* substr = calloc(20, sizeof(char));
-        memcpy(substr, s + 1, strlen(s) - 1);
-        buildSuffixTree(substr, token, f);
+        buildSuffixTree(s + 1, token, f);
     }
     else {
-        void* substr = calloc(20, sizeof(char));
-        memcpy(substr, s + 1, strlen(s) - 1);
-        buildSuffixTree(substr, token, n);
+        buildSuffixTree(s + 1, token, n);
     }
 }
 
@@ -389,9 +401,7 @@ enum MarkerType matchTok(char* s, const Node* root)
 
     // Если что-то нашли в дочерних, идем дальше
     if (n) {
-        void* substr = calloc(20, sizeof(char));
-        memcpy(substr, s + 1, strlen(s) - 1);
-        return matchTok(substr, n);
+        return matchTok(s + 1, n);
     }
 }
 
@@ -429,8 +439,8 @@ enum MarkerType matchGlyph(int32_t s, const Node* root, ADOCScanner* scanner)
         }
         if (root->root) {
             scanner->advance(scanner);
-            return M_NONE;
         }
+        return M_NONE;
     }
 
 }
@@ -458,7 +468,7 @@ bool m_any(int32_t* value, size_t position)
 bool m_emptyline(int32_t* value, size_t position)
 {
     return is_newline(*(value + position)) &&
-           is_newline(*(value + position + 1));
+           ( position + 1 < STACK_SIZE && is_newline(*(value + position + 1)) );
 }
 
 static bool adoc_scanner_scan(ADOCScanner* scanner)
@@ -598,7 +608,6 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                     is_inline_markup_start_char(prev)
                 )
             ) {
-                SET_BIT(CTX_MONOSPACE);
                 lexer->result_symbol = T_MONOSPACE_MARKER_START;
                 return true;
             }
@@ -610,23 +619,18 @@ static bool adoc_scanner_scan(ADOCScanner* scanner)
                     is_punctuation(scanner->lookahead)
                 )
             ) {
-                CLEAR_BIT(CTX_MONOSPACE);
                 lexer->result_symbol = T_MONOSPACE_MARKER_END;
                 return true;
             }
             break;
         case M_MONOSPACE_U:
-            if (
-                valid_symbols[T_MONOSPACE_UNCONSTRAINED_MARKER_START]
-            ) {
-                SET_BIT(CTX_MONOSPACE);
+            if (valid_symbols[T_MONOSPACE_UNCONSTRAINED_MARKER_START] &&
+                !is_space_extended(scanner->lookahead)) {
                 lexer->result_symbol = T_MONOSPACE_UNCONSTRAINED_MARKER_START;
                 return true;
             }
-            if (
-                valid_symbols[T_MONOSPACE_UNCONSTRAINED_MARKER_END]
-            ) {
-                CLEAR_BIT(CTX_MONOSPACE);
+            if (valid_symbols[T_MONOSPACE_UNCONSTRAINED_MARKER_END] &&
+                !is_space_extended(prev)) {
                 lexer->result_symbol = T_MONOSPACE_UNCONSTRAINED_MARKER_END;
                 return true;
             }
