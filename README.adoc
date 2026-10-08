@@ -23,14 +23,33 @@ I use Antora, so this parser supports Antora resource locator strings
 
 == Installation
 
-Clone highlights repo to your plugin folder:
+I've moved to `main` branch of
+`link:https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter]`,
+so installation of this parser does not require
+link:https://github.com/cpkio/nvim-treesitter-asciidoc[additional repo],
+which was required before.
 
-....
-git clone https://github.com/cpkio/nvim-treesitter-asciidoc.git
-....
+.Activate custom parser for `main` branch of `nvim-treesitter`
+====
+[source,lua]
+----
+vim.api.nvim_create_autocmd('User', {
+    pattern = 'TSUpdate',
+    callback = function()
+        require("nvim-treesitter.parsers").asciidoc = {
+          install_info = {
+            url = "https://github.com/cpkio/tree-sitter-asciidoc",
+            revision = "0adab3201e5fc85cc2eb1d5772a976da27689422",
+            queries = 'queries'
+          },
+          tier = 2
+        }
+    end,
+  })
+----
+====
 
-Install parser:
-
+.Parser installation
 ....
 :TSInstall asciidoc
 ....
