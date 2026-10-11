@@ -28,6 +28,7 @@ typedef struct ADOCScanner ADOCScanner;
 typedef struct {
   int32_t stack[STACK_SIZE];
   unsigned long long int mask;
+  uint32_t end_column;
 } lookbehind_s;
 
 struct ADOCScanner {
@@ -61,6 +62,7 @@ static unsigned adoc_scanner_serialize(ADOCScanner* scanner, char* buffer);
 static void adoc_scanner_deserialize(ADOCScanner* scanner, const char* buffer, unsigned length);
 
 static bool adoc_scanner_scan(ADOCScanner* scanner);
+static bool adoc_scanner_scan_inner(ADOCScanner* scanner);
 
 Node* createNode(char glyph);
 

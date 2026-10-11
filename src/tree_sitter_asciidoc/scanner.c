@@ -287,7 +287,7 @@ static void adoc_scanner_deserialize(ADOCScanner* scanner, const char* buffer, u
 {
     if ( buffer != NULL && length >= sizeof(lookbehind_s) ) {
         memcpy(scanner->lookbehind, (void*)buffer, sizeof(lookbehind_s));
-    }
+    } else { memset(scanner->lookbehind, 0, sizeof(lookbehind_s)); }
 }
 
 
@@ -471,7 +471,32 @@ bool m_emptyline(int32_t* value, size_t position)
            ( position + 1 < STACK_SIZE && is_newline(*(value + position + 1)) );
 }
 
+#define CHAR_SYNTH_PUNCT '.'    // any char for which is_punctuation() is true
+
+static void sync_lookbehind(ADOCScanner* s)
+{
+    TSLexer* lx = s->lexer;
+    uint32_t col = lx->get_column(lx);
+    uint32_t seen = s->lookbehind->end_column;
+    if (col > seen) {
+        uint32_t n = col - seen;
+        if (n > STACK_SIZE) n = STACK_SIZE;
+        for (uint32_t i = 0; i < n; i++) shift(s, CHAR_SYNTH_PUNCT);
+    }
+}
+
 static bool adoc_scanner_scan(ADOCScanner* scanner)
+{
+    sync_lookbehind(scanner);
+    bool ok = adoc_scanner_scan_inner(scanner);
+    if (ok) {
+        scanner->lookbehind->end_column =
+            scanner->lexer->get_column(scanner->lexer);
+    }
+    return ok;
+}
+
+static bool adoc_scanner_scan_inner(ADOCScanner* scanner)
 {
     TSLexer* lexer = scanner->lexer;
     const bool* valid_symbols = scanner->valid_symbols;
