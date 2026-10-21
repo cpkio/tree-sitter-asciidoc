@@ -73,7 +73,6 @@
 static bool is_newline(int32_t c);
 static bool is_space(int32_t c);
 static bool is_space_extended(int32_t c);
-static bool is_space_consume(ADOCScanner* scanner);
 static bool is_newline_or_space(int32_t c);
 static bool is_newline_or_space_extended(int32_t c);
 static bool is_anything(int32_t c);

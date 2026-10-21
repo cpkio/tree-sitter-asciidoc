@@ -81,13 +81,6 @@ static bool is_space_extended(int32_t c)
     return is_space_char;
 }
 
-static bool is_space_consume(ADOCScanner* scanner)
-{
-    while (is_space(scanner->lookahead)) {
-        scanner->skip(scanner);
-    }
-}
-
 static bool is_newline_or_space(int32_t c)
 {
     return is_newline(c) || is_space(c);
