@@ -248,12 +248,12 @@ static void see(ADOCScanner* scanner)
 static bool match_before(ADOCScanner* scanner, char* value, size_t length, bool (*func_ptr)(int32_t*, size_t) )
 {
     bool match = true;
+    if (length > STACK_SIZE) return false;
     int32_t* items = scanner->lookbehind->stack;
     for (size_t i = 0; i < length && match; i++) {
         match = ((int32_t)(unsigned char)value[length - i - 1] == items[i]);
     }
     bool match_end = func_ptr(items, length);
-    if (length > STACK_SIZE) return false;
     // if (match && match_end) {
     //     // printf("match `%s` at last position %d > %d\n", value, length, match && match_end );
     //     printf("`%d` =? `%d`\n", *(items+length), items[length]);
