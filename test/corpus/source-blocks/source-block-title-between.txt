@@ -1,0 +1,21 @@
+====|||
+Source block with title between
+====|||
+[source,json]
+.Title between
+----
+{"a": 1}
+----
+
+---|||
+(document
+  (option_block
+    (block_option_marker_start)
+    (block_type)
+    (attribute)
+    (block_option_marker_end))
+  (block_title
+    (block_title_marker))
+  (block_listing
+    (block_listing_separator)
+    (block_listing_separator)))

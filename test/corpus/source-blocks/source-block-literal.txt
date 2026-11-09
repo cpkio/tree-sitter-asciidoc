@@ -1,0 +1,18 @@
+====|||
+Source block on literal block
+====|||
+[source,yaml]
+....
+a: 1
+....
+
+---|||
+(document
+  (option_block
+    (block_option_marker_start)
+    (block_type)
+    (attribute)
+    (block_option_marker_end))
+  (block_literal
+    (block_literal_separator)
+    (block_literal_separator)))
