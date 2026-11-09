@@ -1,0 +1,23 @@
+====|||
+Source block in example block
+====|||
+====
+[source,json]
+----
+{"a": 1}
+----
+====
+
+---|||
+(document
+  (block_example1
+    (block_example_separator1)
+    (option_block
+      (block_option_marker_start)
+      (block_type)
+      (attribute)
+      (block_option_marker_end))
+    (block_listing
+      (block_listing_separator)
+      (block_listing_separator))
+    (block_example_separator1)))

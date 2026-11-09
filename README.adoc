@@ -9,14 +9,13 @@ This parser is designed as a writers tool, so it's syntax highlighting would
 help you see if you made an error. This includes parsing option block
 parameters (table `cols=` for example) to help you write them correctly, or
 disabling highlights for literal blocks to indicate there would be no parsing
-inside (there might be ~coffee~ injections later). Parser "knows" what
-parameters are valid for xrefs, includes or icon macros, so it would highlight
-known ones. On the other side, it can understand whether syntax of
-non-Asciidoctor parameters (`[parameter="value;value"]`) is correct or not.
+inside. Parser "knows" what parameters are valid for xrefs, includes or icon
+macros, so it would highlight known ones. On the other side, it can understand
+whether syntax of non-Asciidoctor parameters (`[parameter="value;value"]`) is
+correct or not.
 
-I know you can inject other parsers into current parser context (highlight
-`[source,json]` blocks with `tree-sitter-json` for example), but this feature
-is not available yet. This is my first TS parser after all.
+Neovim highlights code in `[source,LANG]` blocks with the language parser of
+`LANG`. See <<Code block highlighting>>.
 
 I use Antora, so this parser supports Antora resource locator strings
 (`+include::v1@Component:module:page$index.adoc[]+`).
@@ -54,6 +53,73 @@ vim.api.nvim_create_autocmd('User', {
 :TSInstall asciidoc
 ....
 
+== Code block highlighting
+
+The file `queries/injections.scm` tells Neovim which text in a source block
+is code in a different language. Neovim sends this text to the language parser
+of `LANG` and highlights it with that parser.
+
+Supported syntax:
+
+- `[source,LANG]` above a `----` listing block;
+
+- `[source,LANG]` above a `....` literal block;
+
+- a block title (`.Title`) above or below the `[source,LANG]` line;
+
+- more attributes after `LANG` (`[source,ruby,linenums]`).
+
+A source block can be at the top level or after a list continuation (`+`).
+It can also be in a different block, such as an example block (`====`) or a
+table cell.
+
+....
+[source,json]    <- block_type "source", attribute "json"
+.Optional title
+----             <- block_listing: Neovim sends its text to the json parser
+{"a": 1}
+----
+....
+
+Install the language parser for each `LANG` that you use. Without the
+language parser, Neovim shows the block as plain text and gives no error.
+
+....
+:TSInstall json
+....
+
+Neovim changes `LANG` to lower case and changes `-` to `_`. Then Neovim looks
+for a language parser or a filetype with that name. `nvim-treesitter` already
+knows names such as `js`, `py`, `ts` and `sh`. For a different name, add an
+alias in your `init.lua`:
+
+[source,lua]
+----
+vim.treesitter.language.register('bash', { 'console', 'shell', 'shell_session' })
+vim.treesitter.language.register('yaml', 'yml')
+vim.treesitter.language.register('ruby', 'rb')
+vim.treesitter.language.register('rust', 'rs')
+----
+
+Known limitations:
+
+- The AsciiDoc parser gives an `ERROR` node for `[,LANG]` and
+  `[source%linenums,LANG]`.
+
+- The AsciiDoc parser does not close the attribute line `[source,c++]`. Then
+  `++` starts an inline passthrough that continues to the end of the document.
+
+- `queries/injections.scm` does not use the `:source-language:` attribute.
+  A `[source]` block without `LANG` gets no highlighting.
+
+- `[source,LANG]` on a `--` open block or on a paragraph gives no
+  highlighting.
+
+- Neovim does not send callouts, `include::` lines and `//` comment lines in
+  the block to the language parser.
+
+- The tests used only Neovim with `nvim-treesitter` (`main` branch).
+
 == Tests
 
 ....
@@ -83,8 +149,8 @@ We need:
 
 - refactoring parser code by real programmers;
 
-- detection of languages and injection of other parsers in literal blocks
-  (based on preceding option block);
+- grammar fixes for the source block forms in the known limitations of
+  <<Code block highlighting>>;
 
 - discussion on what TS context should be assigned to what;
 

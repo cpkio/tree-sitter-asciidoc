@@ -1,0 +1,19 @@
+====|||
+Source block with linenums
+====|||
+[source,ruby,linenums]
+----
+puts 1
+----
+
+---|||
+(document
+  (option_block
+    (block_option_marker_start)
+    (block_type)
+    (attribute)
+    (attribute)
+    (block_option_marker_end))
+  (block_listing
+    (block_listing_separator)
+    (block_listing_separator)))
